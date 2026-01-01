@@ -11,11 +11,22 @@ private:
 	bool folded;
 	bool myTurn;
 
-	float currentBet;
+	double currentBet;
 public:
+
 	Player(std::string newName, float newStartingStack) : name(newName), stackSize(newStartingStack), cardOne(-1, -1), cardTwo(-1, -1), currentBet(0.0) {
 		folded = false;
 		myTurn = false;
+	}
+
+	void setCurrentBet(double newBet)
+	{
+		currentBet = newBet;
+	}
+
+	double getCurrentBet()const
+	{
+		return currentBet;
 	}
 
 	std::string getName()const

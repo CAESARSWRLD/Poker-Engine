@@ -20,6 +20,9 @@ private:
 
 	int smallBlindIndex;
 
+	double smallBlind;
+	double bigBlind;
+
 public:
 
 	//this table constructor prompts the user for input. this constructor should be refactored when networking is added
@@ -144,6 +147,14 @@ public:
 			}
 			
 		}
+
+		std::cout << "Enter small blind as float\n>";
+		std::cin >> smallBlind;
+		system("cls");
+
+		std::cout << "Now enter big blind as float\n>";
+		std::cin >> bigBlind;
+
 		system("cls");
 	}
 
@@ -162,18 +173,33 @@ public:
 
 		std::string a = "a";
 		
-		for (int i = 0; i < playerCount; i++)
+		for (int i = 0; i < playerCount; ++i)
 		{
-			a += "a";
 			Player player(a, 100);
+			
+			a += "a";
 			addPlayer(player);
 		}
 
 		this->isRunning = true;
 
+		this->smallBlind = 1.0;
+		this->bigBlind = 2.0;
+
+
 		system("cls");
 
 		//std::cout << "Debug table created" << std::endl;
+	}
+
+	double getSmallBlind()const
+	{
+		return smallBlind;
+	}
+
+	double getBigBlind()const
+	{
+		return bigBlind;
 	}
 
 	void advancePositions()
@@ -195,7 +221,7 @@ public:
 		isRunning = false;
 	}
 
-	std::deque<Player> getPlayers()const
+	std::deque<Player>& getPlayers()
 	{
 		return players;
 	}
