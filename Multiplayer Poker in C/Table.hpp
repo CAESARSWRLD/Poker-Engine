@@ -17,9 +17,7 @@ private:
 	Card cards[52];
 	int tableID = 0;
 	bool isRunning;
-
 	int smallBlindIndex;
-
 	double smallBlind;
 	double bigBlind;
 
@@ -31,7 +29,6 @@ public:
 		smallBlindIndex = 0;
 
 		isRunning = true;
-
 
 		int playersSoFar = 0;
 		while (playersSoFar < 2)
@@ -53,7 +50,7 @@ public:
 			std::string newUserName;
 			std::cout << "***LOCAL GAME***\nCurrently there are " << players.size() << " players at the table\n" << "Enter a new player's name who you want to add to the table\n>";
 			std::cin >> newUserName;
-			float startingStack;
+			double startingStack;
 			std::cout << "$$$ Enter the buy in for this player $$$\n>";
 			std::cin >> startingStack;
 			Player newPlayer(newUserName, startingStack);
@@ -130,7 +127,7 @@ public:
 				std::string newUserName;
 				std::cout << "***Currently there are " << playerCount << " players at the table***\nEnter a new player's name who you want to add to the table\n>";
 				std::cin >> newUserName;
-				float startingStack;
+				double startingStack;
 				std::cout << "$$$ Enter the buy in for this player $$$\n>";
 				std::cin >> startingStack;
 				Player newPlayer(newUserName, startingStack);
@@ -154,6 +151,7 @@ public:
 
 		std::cout << "Now enter big blind as float\n>";
 		std::cin >> bigBlind;
+
 
 		system("cls");
 	}
@@ -192,6 +190,8 @@ public:
 		//std::cout << "Debug table created" << std::endl;
 	}
 
+	
+
 	double getSmallBlind()const
 	{
 		return smallBlind;
@@ -204,11 +204,11 @@ public:
 
 	void advancePositions()
 	{
-		auto p = std::move(players.back());
+		auto p = std::move(players.front());
 		
-		players.pop_back();
+		players.pop_front();
 
-		players.push_front(std::move(p));
+		players.push_back(std::move(p));
 	}
 
 	bool getIsRunning()const
@@ -240,7 +240,7 @@ public:
 		return true;
 	}
 
-	int getPlayerCount()const
+	size_t getPlayerCount()const
 	{
 		return players.size();
 	}

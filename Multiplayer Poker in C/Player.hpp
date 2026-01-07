@@ -7,14 +7,14 @@ private:
 	Card cardOne;
 	Card cardTwo;
 	std::string name;
-	float stackSize;
+	double stackSize;
 	bool folded;
 	bool myTurn;
 
 	double currentBet;
 public:
 
-	Player(std::string newName, float newStartingStack) : name(newName), stackSize(newStartingStack), cardOne(-1, -1), cardTwo(-1, -1), currentBet(0.0) {
+	Player(std::string newName, double newStartingStack) : name(newName), stackSize(newStartingStack), cardOne(-1, -1), cardTwo(-1, -1), currentBet(0.0) {
 		folded = false;
 		myTurn = false;
 	}
@@ -34,7 +34,7 @@ public:
 		return name;
 	}
 
-	int getMoneyAmount()const
+	double getMoneyAmount()const
 	{
 		return stackSize;
 	}
