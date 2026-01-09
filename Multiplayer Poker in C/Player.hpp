@@ -12,11 +12,24 @@ private:
 	bool myTurn;
 
 	double currentBet;
+
+	bool madeAction;
 public:
 
 	Player(std::string newName, double newStartingStack) : name(newName), stackSize(newStartingStack), cardOne(-1, -1), cardTwo(-1, -1), currentBet(0.0) {
 		folded = false;
 		myTurn = false;
+		madeAction = false;
+	}
+
+	bool getMadeAction()const
+	{
+		return madeAction;
+	}
+
+	void setMadeAction(bool newMadeAction)
+	{
+		madeAction = newMadeAction;
 	}
 
 	void setCurrentBet(double newBet)

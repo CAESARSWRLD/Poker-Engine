@@ -37,9 +37,23 @@ void runHand(Table& table)
 
 	size_t indexOfRaiser = 1;
 
+	//preflop will be set to false once preflop sequence is over
+	bool preFlop = true;
 	size_t s = 2;
-	while (s < table.getPlayers().size())
+	while (preFlop)
 	{
+
+
+		//in the future add this: Player curPlayer = table.getPlayers()[s]
+		Player& curPlayer = table.getPlayers()[s];
+		if (curPlayer.getFolded())
+		{
+			//std::cout << table.getPlayers()[s].getName() << " has already folded. press enter";
+			//std::cin.get();
+			++s;
+			continue;
+		}
+
 		std::cout << "Player index: " << s << " with player name: " << table.getPlayers()[s].getName() << std::endl;
 
 		std::cout << "CURRENT BET SIZE " << currentTableBet << std::endl;
@@ -53,10 +67,14 @@ void runHand(Table& table)
 		std::cout << "Player " << table.getPlayers()[s].getName();
 		std::cout << "If " << table.getPlayers()[s].getName() << " calls, they've already put in $" << table.getPlayers()[s].getCurrentBet() << std::endl;
 
-		double currentPlayersBet = table.getPlayers()[s].getCurrentBet();
+		double currentPlayersBet = curPlayer.getCurrentBet();
 		if (currentPlayersBet < currentTableBet)
 		{
-			facingBetProcessAnswer(currentTableBet, currentPlayersBet, pot);
+			if (facingBetProcessAnswer(currentTableBet, currentPlayersBet, pot) == "fold")
+			{
+				curPlayer.setFolded(true);
+				curPlayer.setMadeAction(true);
+			}
 
 
 		}
@@ -64,7 +82,7 @@ void runHand(Table& table)
 		{
 			facingCheckProcessAnswer(currentTableBet, pot);
 
-
+			curPlayer.setMadeAction(true);
 		}
 
 
@@ -87,6 +105,22 @@ void runHand(Table& table)
 		system("cls");
 		++s;
 	}
+
+	bool flop = false;
+	while(flop)
+	{
+		std::cout << "FLOP" << std::endl;
+	}
+
+
+	if (table.checkForEndOfRound())
+	{
+		preFlop = true;
+	}
+	
+
+
+
 
 	//std::cout << "end hand" << std::endl;
 

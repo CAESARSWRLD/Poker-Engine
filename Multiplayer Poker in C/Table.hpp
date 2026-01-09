@@ -192,7 +192,18 @@ public:
 		//std::cout << "Debug table created" << std::endl;
 	}
 
-	
+	bool checkForEndOfRound()
+	{
+		for (auto& p : players)
+		{
+			if (p.getMadeAction() == false)
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
 
 	double getSmallBlind()const
 	{
