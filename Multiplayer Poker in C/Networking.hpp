@@ -1,12 +1,13 @@
 #pragma once
 #include <string>
+#include "Player.hpp"
 
 
-std::string facingBetProcessAnswer(double& betSize);
-std::string facingCheckProcessAnswer(double& betSize);
+std::string facingBetProcessAnswer(double& betSize, double currentPlayersBet, double& pot);
+std::string facingCheckProcessAnswer(double& betSize, double& pot);
 
 //updates betSize and returns the name of the player action
-std::string facingBetProcessAnswer(double& betSize)
+std::string facingBetProcessAnswer(double& betSize, double currentPlayersBet, double& pot)
 {
 
 	//here is where networking should be handled between server and client
@@ -14,10 +15,11 @@ std::string facingBetProcessAnswer(double& betSize)
 	int input = 0;
 	while (input != 1 && input != 2 && input != 3)
 	{
-		std::cout << "Options\n(1)fold\n(2)call $" << betSize << "\n(3)raise\n>";
+		std::cout << "Options\n(1)fold\n(2)call $" << betSize - currentPlayersBet << " more" << "\n(3)raise\n>";
 		std::cin >> input;
 
 	}
+
 	//after the message is recieved from client, process it and validate it
 
 	double raised = 0.00;
@@ -29,7 +31,9 @@ std::string facingBetProcessAnswer(double& betSize)
 	}
 	else if (input == 2)
 	{
+		pot += betSize - currentPlayersBet;
 		return "call";
+
 	}
 
 
@@ -48,11 +52,12 @@ std::string facingBetProcessAnswer(double& betSize)
 
 	}
 
+	betSize = raised;
+	pot += betSize;
 	return "raise";
-	
 }
 
-std::string facingCheckProcessAnswer(double& betSize)
+std::string facingCheckProcessAnswer(double& betSize, double& pot)
 {
 
 	//here is where networking should be handled between server and client
@@ -70,11 +75,9 @@ std::string facingCheckProcessAnswer(double& betSize)
 	{
 		std::cout << "Enter bet size\n>";
 		std::cin >> input;
-		betSize += input;
+		betSize = input;
 		return "bet";
 	}
 
 	return "check";
-
-	
 }

@@ -43,4 +43,14 @@ public:
 		cardOne = one;
 		cardTwo = two;
 	}
+
+	bool getFolded()const
+	{
+		return folded;
+	}
+
+	void setFolded(bool newFolded)
+	{
+		folded = newFolded;
+	}
 };

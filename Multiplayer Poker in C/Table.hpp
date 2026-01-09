@@ -4,6 +4,7 @@
 #include <string.h>
 #include <deque>
 #include <queue>
+#include <string>
 
 #include "Player.hpp"
 #include "Card.hpp"
@@ -173,9 +174,10 @@ public:
 		
 		for (int i = 0; i < playerCount; ++i)
 		{
-			Player player(a, 100);
+			std::string name = "p" + std::to_string(i);
+			Player player(name, 100);
 			
-			a += "a";
+			
 			addPlayer(player);
 		}
 
