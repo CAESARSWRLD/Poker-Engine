@@ -140,6 +140,7 @@
     <ClInclude Include="Networking.hpp" />
     <ClInclude Include="Player.hpp" />
     <ClInclude Include="Table.hpp" />
+    <ClInclude Include="VibeCodedFunctions.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

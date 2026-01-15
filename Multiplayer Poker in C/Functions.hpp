@@ -7,3 +7,4 @@ void gameLoop();
 void drawTable(Table& table);
 void runHand(Table& table);
 
+void runPreflop(Table& table);

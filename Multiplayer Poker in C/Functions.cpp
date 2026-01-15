@@ -3,6 +3,7 @@
 #include <chrono>
 #include "Functions.hpp"
 #include "Networking.hpp"
+#include "VibeCodedFunctions.hpp"
 
 void gameLoop()
 {
@@ -25,13 +26,42 @@ void gameLoop()
 
 void runHand(Table& table)
 {
+	
+	runPreflop(table);
+	
+	std::cout << "reached!!!!";
+	std::cin.get();
+	bool flop = false;
+	while(flop)
+	{
+		std::cout << "FLOP" << std::endl;
+	}
+
+
+	
+
+
+
+
+	//std::cout << "end hand" << std::endl;
+
+	//std::cin.get();
+
+	//std::cin.get();
+		
+}
+
+
+
+void runPreflop(Table& table)
+{
 	double currentTableBet = table.getBigBlind();
 	double pot = table.getSmallBlind() + table.getBigBlind();
-	
+
 	//index 0 of table.getPlayers() should always be the small blind
 	// 
 	//following lines set small and big blind current bet sizes to the size of the blinds already stored in the table
-	
+
 	table.getPlayers()[0].setCurrentBet(table.getSmallBlind());
 	table.getPlayers()[1].setCurrentBet(table.getBigBlind());
 
@@ -57,40 +87,51 @@ void runHand(Table& table)
 		std::cout << "Player index: " << s << " with player name: " << table.getPlayers()[s].getName() << std::endl;
 
 		std::cout << "CURRENT BET SIZE " << currentTableBet << std::endl;
-		std::cout << "small: " << table.getPlayers()[0].getName() << " with $" << table.getPlayers()[0].getCurrentBet() << std::endl;
-		std::cout << "big: " << table.getPlayers()[1].getName() << " with $" << table.getPlayers()[1].getCurrentBet() << std::endl;
+		//std::cout << "small: " << table.getPlayers()[0].getName() << " with $" << table.getPlayers()[0].getCurrentBet() << std::endl;
+		//std::cout << "big: " << table.getPlayers()[1].getName() << " with $" << table.getPlayers()[1].getCurrentBet() << std::endl;
 		std::cout << "POT: " << pot << std::endl;
 
 		drawTable(table);
 		std::cout << table.getPlayers()[s].getName() << "'s turn. Select action\n";
 
-		std::cout << "Player " << table.getPlayers()[s].getName();
-		std::cout << "If " << table.getPlayers()[s].getName() << " calls, they've already put in $" << table.getPlayers()[s].getCurrentBet() << std::endl;
+		std::cout << "Player " << table.getPlayers()[s].getName() << std::endl;
+
+
+
 
 		double currentPlayersBet = curPlayer.getCurrentBet();
 		if (currentPlayersBet < currentTableBet)
 		{
+			std::cout << "If " << table.getPlayers()[s].getName() << " calls, they've already put in $" << table.getPlayers()[s].getCurrentBet() << std::endl;
+
 			if (facingBetProcessAnswer(currentTableBet, currentPlayersBet, pot) == "fold")
 			{
 				curPlayer.setFolded(true);
-				curPlayer.setMadeAction(true);
+			}
+			else if (facingBetProcessAnswer(currentTableBet, currentPlayersBet, pot) == "raise")
+			{
+				table.setAllMadeActionsToFalse();
 			}
 
+			curPlayer.setMadeAction(true);
 
 		}
 		else
 		{
-			facingCheckProcessAnswer(currentTableBet, pot);
+			if (facingCheckProcessAnswer(currentTableBet, pot) == "bet")
+			{
+				table.setAllMadeActionsToFalse();
+			}
 
 			curPlayer.setMadeAction(true);
 		}
 
 
-		
-		
 
 
-		if (s == table.getPlayers().size()-1)
+
+		//button reached. return to small blind
+		if (s == table.getPlayers().size() - 1)
 		{
 			s = 0;
 			system("cls");
@@ -99,37 +140,21 @@ void runHand(Table& table)
 		}
 
 
+		
+		/*if (table.checkForEndOfRound())
+		{
+			break;
+		}*/
 
-		std::cin.get();
+
+		//std::cin.get();
 
 		system("cls");
 		++s;
+
 	}
 
-	bool flop = false;
-	while(flop)
-	{
-		std::cout << "FLOP" << std::endl;
-	}
-
-
-	if (table.checkForEndOfRound())
-	{
-		preFlop = true;
-	}
-	
-
-
-
-
-	//std::cout << "end hand" << std::endl;
-
-	//std::cin.get();
-
-	//std::cin.get();
-		
 }
-
 
 
 

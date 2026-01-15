@@ -21,14 +21,14 @@ private:
 	int smallBlindIndex;
 	double smallBlind;
 	double bigBlind;
-
+	double betToCall;
 public:
 
 	//this table constructor prompts the user for input. this constructor should be refactored when networking is added
 	Table() {
 
 		smallBlindIndex = 0;
-
+		betToCall = 0.0;
 		isRunning = true;
 
 		int playersSoFar = 0;
@@ -160,6 +160,7 @@ public:
 	//debug(default) table. This table requires no input and creates default values for the table's attributes. Integer as lone parameter is the number of players
 	Table(int playerCount)
 	{
+		betToCall = 0.0;
 
 		while (playerCount > MAX_PLAYERS)
 		{
@@ -192,16 +193,33 @@ public:
 		//std::cout << "Debug table created" << std::endl;
 	}
 
+	//sets all madeAction booleans of table's active players to false. Make sure to set the aggressing player's madeAction to true after this is called. Used when a player bets or rasies
+	void setAllMadeActionsToFalse()
+	{
+
+		for (auto& player : players)
+		{
+			if(!player.getFolded())
+				player.setMadeAction(false);
+		}
+	}
+
 	bool checkForEndOfRound()
 	{
+		//std::cout << "entered check func\n";
+		//std::cin.get();
 		for (auto& p : players)
 		{
-			if (p.getMadeAction() == false)
+			//round cannot end if there's a player who hasnt made their action 
+			if (p.getMadeAction() == false || p.getFolded() == false)
 			{
+				//std::cout << "WE MADE IT HERE\n";
+				//std::cin.get();
 				return false;
 			}
 		}
-
+		//std::cout << "CHECKED AND RETURNED TRUUUE\n";
+		//std::cin.get();
 		return true;
 	}
 
@@ -215,6 +233,8 @@ public:
 		return bigBlind;
 	}
 
+
+	//after each hand this runs to shift the positions of players at the table
 	void advancePositions()
 	{
 		auto p = std::move(players.front());
