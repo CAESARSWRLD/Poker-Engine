@@ -6,5 +6,4 @@
 void gameLoop();
 void drawTable(Table& table);
 void runHand(Table& table);
-
-void runPreflop(Table& table);
+void runRound(Table& table, int round);

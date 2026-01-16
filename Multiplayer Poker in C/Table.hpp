@@ -233,7 +233,6 @@ public:
 		return bigBlind;
 	}
 
-
 	//after each hand this runs to shift the positions of players at the table
 	void advancePositions()
 	{
@@ -259,8 +258,6 @@ public:
 		return players;
 	}
 		
-
-
 	bool addPlayer(Player& player)
 	{
 		if (getPlayerCount() == MAX_PLAYERS) {

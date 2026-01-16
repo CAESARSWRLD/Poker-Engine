@@ -13,8 +13,9 @@ void gameLoop()
 	//using int as input parameter means this is a debug table with default values
 	Table table(8);
 	
-	
-	while(table.getPlayers().size() > 1)
+	int minimumPlayercount = 1;
+
+	while(table.getPlayers().size() > minimumPlayercount)
 	{
 		runHand(table);
 
@@ -23,11 +24,12 @@ void gameLoop()
 	}
 }
 
-
 void runHand(Table& table)
 {
-	
-	runPreflop(table);
+	//1 for preflop, 2 for turn and 3 for river
+	int round = 1;
+
+	runRound(table, round);
 	
 	std::cout << "reached!!!!";
 	std::cin.get();
@@ -51,10 +53,9 @@ void runHand(Table& table)
 		
 }
 
-
-
-void runPreflop(Table& table)
+void runRound(Table& table, int round)
 {
+	//currentTableBet starts as the big blind amount
 	double currentTableBet = table.getBigBlind();
 	double pot = table.getSmallBlind() + table.getBigBlind();
 
@@ -65,17 +66,36 @@ void runPreflop(Table& table)
 	table.getPlayers()[0].setCurrentBet(table.getSmallBlind());
 	table.getPlayers()[1].setCurrentBet(table.getBigBlind());
 
-	size_t indexOfRaiser = 1;
+	//size_t indexOfRaiser = 1;
 
 	//preflop will be set to false once preflop sequence is over
-	bool preFlop = true;
 	size_t s = 2;
-	while (preFlop)
+	while (1)
 	{
+		Player& curPlayer = table.getPlayers()[s];
+		double currentPlayersBet = curPlayer.getCurrentBet();
 
+
+
+		//bb option(if round equals 'preflop' and player is bb)
+		if (round == 1 && s == 1)
+		{
+			std::cout << "BB option\n";
+			std::string action = facingCheckProcessAnswer(currentTableBet, pot);
+
+			if (action == "check")
+				break;
+			else if (action == "bet")
+			{
+				table.setAllMadeActionsToFalse();
+				curPlayer.setCurrentBet(currentTableBet);
+				curPlayer.setMadeAction(true);
+
+			}
+
+		}
 
 		//in the future add this: Player curPlayer = table.getPlayers()[s]
-		Player& curPlayer = table.getPlayers()[s];
 		if (curPlayer.getFolded())
 		{
 			//std::cout << table.getPlayers()[s].getName() << " has already folded. press enter";
@@ -99,18 +119,24 @@ void runPreflop(Table& table)
 
 
 
-		double currentPlayersBet = curPlayer.getCurrentBet();
 		if (currentPlayersBet < currentTableBet)
 		{
 			std::cout << "If " << table.getPlayers()[s].getName() << " calls, they've already put in $" << table.getPlayers()[s].getCurrentBet() << std::endl;
 
-			if (facingBetProcessAnswer(currentTableBet, currentPlayersBet, pot) == "fold")
+			std::string action = facingBetProcessAnswer(currentTableBet, currentPlayersBet, pot);
+			if (action == "fold")
 			{
 				curPlayer.setFolded(true);
 			}
-			else if (facingBetProcessAnswer(currentTableBet, currentPlayersBet, pot) == "raise")
+			else if (action == "raise")
 			{
 				table.setAllMadeActionsToFalse();
+
+				curPlayer.setCurrentBet(currentTableBet);
+			}
+			else
+			{
+				curPlayer.setCurrentBet(currentTableBet);
 			}
 
 			curPlayer.setMadeAction(true);
@@ -118,9 +144,14 @@ void runPreflop(Table& table)
 		}
 		else
 		{
-			if (facingCheckProcessAnswer(currentTableBet, pot) == "bet")
+			std::string action = facingCheckProcessAnswer(currentTableBet, pot);
+
+
+			if (action == "bet")
 			{
 				table.setAllMadeActionsToFalse();
+				curPlayer.setCurrentBet(currentTableBet);
+
 			}
 
 			curPlayer.setMadeAction(true);
@@ -141,10 +172,10 @@ void runPreflop(Table& table)
 
 
 		
-		/*if (table.checkForEndOfRound())
+		if (table.checkForEndOfRound())
 		{
 			break;
-		}*/
+		}
 
 
 		//std::cin.get();
@@ -154,12 +185,10 @@ void runPreflop(Table& table)
 
 	}
 
+	std::cout << "END OF ROUND REACHED\n";
+	std::cin.get();
+
 }
-
-
-
-
-
 
 //use until a proper ui is added
 void drawTable(Table& table)

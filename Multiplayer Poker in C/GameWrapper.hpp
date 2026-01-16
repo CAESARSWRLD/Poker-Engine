@@ -2,6 +2,7 @@
 #include <iostream>
 #include "Table.hpp"
 #include "Functions.hpp"
+
 class GameWrapper
 {	
 public:
