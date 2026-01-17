@@ -56,11 +56,6 @@ void runHand(Table& table)
 //this desperately needs refactoring at some point
 void runRound(Table& table, int round)
 {
-	bool bbOption = false;
-	if (round == 1)
-		bbOption = true;
-	
-
 	//currentTableBet starts as the big blind amount
 	double currentTableBet = table.getBigBlind();
 	double pot = table.getSmallBlind() + table.getBigBlind();
@@ -84,8 +79,6 @@ void runRound(Table& table, int round)
 
 		if (curPlayer.getFolded())
 		{
-			//std::cout << table.getPlayers()[s].getName() << " has already folded. press enter";
-			//std::cin.get();
 			++s;
 			continue;
 		}
@@ -160,7 +153,7 @@ void runRound(Table& table, int round)
 			curPlayer.setMadeAction(true);
 
 		}
-		else if (currentPlayersBet == currentTableBet && bbOption)
+		else if (currentPlayersBet == currentTableBet)
 		{
 
 		}
@@ -225,7 +218,6 @@ void drawTable(Table& table)
 	for (auto& p : table.getPlayers())
 	{
 
-		//formatting text on screen
 		if (players == 4)
 			break;
 	
@@ -269,7 +261,6 @@ void drawTable(Table& table)
 
 			if (count >= 4)
 			{
-				//formatting text on screen
 				std::cout << p.getName() << "[" << p.getMoneyAmount() << "]    ";
 			}
 			count++;
