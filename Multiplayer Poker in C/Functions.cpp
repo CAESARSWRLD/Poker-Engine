@@ -56,6 +56,11 @@ void runHand(Table& table)
 //this desperately needs refactoring at some point
 void runRound(Table& table, int round)
 {
+	bool bbOptionUsed = false;
+	
+
+	
+
 	//currentTableBet starts as the big blind amount
 	double currentTableBet = table.getBigBlind();
 	double pot = table.getSmallBlind() + table.getBigBlind();
@@ -74,6 +79,15 @@ void runRound(Table& table, int round)
 	size_t aggressingPlayerIndex = 1;
 	while (1)
 	{
+		//button reached. return to small blind
+		if (s == table.getPlayers().size())
+		{
+			s = 0;
+			system("cls");
+
+			continue;
+		}
+
 		Player& curPlayer = table.getPlayers()[s];
 		double currentPlayersBet = curPlayer.getCurrentBet();
 
@@ -82,16 +96,12 @@ void runRound(Table& table, int round)
 			++s;
 			continue;
 		}
-
-
-
 		
-
-
 		//SPECIAL CASE
 		//bb option(if round equals 'preflop', player is bb and it calls/folds around)
-		if (round == 1 && s == 1 && currentPlayersBet == currentTableBet)
+		if (round == 1 && s == 1 && currentPlayersBet == currentTableBet && !bbOptionUsed)
 		{
+			bbOptionUsed = true;
 			std::cout << "BB option\n";
 			std::string action = facingCheckProcessAnswer(currentTableBet, pot);
 
@@ -153,9 +163,9 @@ void runRound(Table& table, int round)
 			curPlayer.setMadeAction(true);
 
 		}
-		else if (currentPlayersBet == currentTableBet)
+		else if (currentPlayersBet == currentTableBet && aggressingPlayerIndex == s)
 		{
-
+			break;
 		}
 		else
 		{
@@ -178,14 +188,7 @@ void runRound(Table& table, int round)
 
 
 
-		//button reached. return to small blind
-		if (s == table.getPlayers().size() - 1)
-		{
-			s = 0;
-			system("cls");
-
-			continue;
-		}
+		
 
 
 		
