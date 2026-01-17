@@ -53,8 +53,14 @@ void runHand(Table& table)
 		
 }
 
+//this desperately needs refactoring at some point
 void runRound(Table& table, int round)
 {
+	bool bbOption = false;
+	if (round == 1)
+		bbOption = true;
+	
+
 	//currentTableBet starts as the big blind amount
 	double currentTableBet = table.getBigBlind();
 	double pot = table.getSmallBlind() + table.getBigBlind();
@@ -70,15 +76,28 @@ void runRound(Table& table, int round)
 
 	//preflop will be set to false once preflop sequence is over
 	size_t s = 2;
+	size_t aggressingPlayerIndex = 1;
 	while (1)
 	{
 		Player& curPlayer = table.getPlayers()[s];
 		double currentPlayersBet = curPlayer.getCurrentBet();
 
+		if (curPlayer.getFolded())
+		{
+			//std::cout << table.getPlayers()[s].getName() << " has already folded. press enter";
+			//std::cin.get();
+			++s;
+			continue;
+		}
 
 
-		//bb option(if round equals 'preflop' and player is bb)
-		if (round == 1 && s == 1)
+
+		
+
+
+		//SPECIAL CASE
+		//bb option(if round equals 'preflop', player is bb and it calls/folds around)
+		if (round == 1 && s == 1 && currentPlayersBet == currentTableBet)
 		{
 			std::cout << "BB option\n";
 			std::string action = facingCheckProcessAnswer(currentTableBet, pot);
@@ -87,22 +106,19 @@ void runRound(Table& table, int round)
 				break;
 			else if (action == "bet")
 			{
+				aggressingPlayerIndex = s;
 				table.setAllMadeActionsToFalse();
 				curPlayer.setCurrentBet(currentTableBet);
 				curPlayer.setMadeAction(true);
-
+				++s;
+				system("cls");
+				continue;
 			}
 
 		}
 
 		//in the future add this: Player curPlayer = table.getPlayers()[s]
-		if (curPlayer.getFolded())
-		{
-			//std::cout << table.getPlayers()[s].getName() << " has already folded. press enter";
-			//std::cin.get();
-			++s;
-			continue;
-		}
+		
 
 		std::cout << "Player index: " << s << " with player name: " << table.getPlayers()[s].getName() << std::endl;
 
@@ -130,6 +146,8 @@ void runRound(Table& table, int round)
 			}
 			else if (action == "raise")
 			{
+				aggressingPlayerIndex = s;
+
 				table.setAllMadeActionsToFalse();
 
 				curPlayer.setCurrentBet(currentTableBet);
@@ -142,8 +160,14 @@ void runRound(Table& table, int round)
 			curPlayer.setMadeAction(true);
 
 		}
+		else if (currentPlayersBet == currentTableBet && bbOption)
+		{
+
+		}
 		else
 		{
+			
+
 			std::string action = facingCheckProcessAnswer(currentTableBet, pot);
 
 
