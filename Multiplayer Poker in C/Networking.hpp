@@ -68,6 +68,9 @@ std::string facingCheckProcessAnswer(double& betSize, double& pot)
 	double input = 0;
 	while (input != 1 && input != 2)
 	{
+
+
+
 		std::cout << "Options\n(1)check\n(2)bet\n>";
 		std::cin >> input;
 	}

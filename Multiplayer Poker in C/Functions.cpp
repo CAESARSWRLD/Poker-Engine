@@ -11,7 +11,7 @@ void gameLoop()
 	//Table table;
 
 	//using int as input parameter means this is a debug table with default values
-	Table table(8);
+	Table table(6);
 	
 	int minimumPlayercount = 1;
 
@@ -31,13 +31,9 @@ void runHand(Table& table)
 
 	runRound(table, round);
 	
-	std::cout << "reached!!!!";
 	std::cin.get();
-	bool flop = false;
-	while(flop)
-	{
-		std::cout << "FLOP" << std::endl;
-	}
+	std::cin.get();
+
 
 
 	
@@ -54,8 +50,10 @@ void runHand(Table& table)
 }
 
 //this desperately needs refactoring at some point
-void runRound(Table& table, int round)
+bool runRound(Table& table, int& round)
 {
+	
+
 	bool bbOptionUsed = false;
 	
 
@@ -72,13 +70,21 @@ void runRound(Table& table, int round)
 	table.getPlayers()[0].setCurrentBet(table.getSmallBlind());
 	table.getPlayers()[1].setCurrentBet(table.getBigBlind());
 
-	//size_t indexOfRaiser = 1;
-
-	//preflop will be set to false once preflop sequence is over
+	//utg first to act preflop. sb first to act postflop
 	size_t s = 2;
+	if (round != 1)
+		s = 0;
+
 	size_t aggressingPlayerIndex = 1;
 	while (1)
 	{
+		if (aPlayerHasWon(table))
+		{
+			std::cout << "a player has won\n";
+
+			return true;
+		}
+
 		//button reached. return to small blind
 		if (s == table.getPlayers().size())
 		{
@@ -208,7 +214,24 @@ void runRound(Table& table, int round)
 	std::cout << "END OF ROUND REACHED\n";
 	std::cin.get();
 
+	return false;
 }
+
+bool aPlayerHasWon(Table& table)
+{
+	int activePlayersCount = table.getPlayerCount();
+	for (auto& player : table.getPlayers())
+	{
+		if (player.getFolded())
+			activePlayersCount--;
+	}
+
+	if (activePlayersCount == 1)
+		return true;
+
+	return false;
+}
+
 
 //use until a proper ui is added
 void drawTable(Table& table)

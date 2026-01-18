@@ -6,4 +6,5 @@
 void gameLoop();
 void drawTable(Table& table);
 void runHand(Table& table);
-void runRound(Table& table, int round);
+bool runRound(Table& table, int& round);
+bool aPlayerHasWon(Table& table);
