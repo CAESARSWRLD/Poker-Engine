@@ -26,11 +26,16 @@ void gameLoop()
 
 void runHand(Table& table)
 {
+	Player* winningPlayer = nullptr;
 	//1 for preflop, 2 for turn and 3 for river
 	int round = 1;
 
-	runRound(table, round);
+	runRound(table, round, winningPlayer);
 	
+		
+	
+	
+
 	std::cin.get();
 	std::cin.get();
 
@@ -50,7 +55,7 @@ void runHand(Table& table)
 }
 
 //this desperately needs refactoring at some point
-bool runRound(Table& table, int& round)
+bool runRound(Table& table, int& round, Player*& winningPlayer)
 {
 	
 
@@ -78,8 +83,10 @@ bool runRound(Table& table, int& round)
 	size_t aggressingPlayerIndex = 1;
 	while (1)
 	{
-		if (aPlayerHasWon(table))
+		if (playerHasWon(table))
 		{
+			
+
 			std::cout << "a player has won\n";
 
 			return true;
@@ -226,8 +233,10 @@ bool aPlayerHasWon(Table& table)
 			activePlayersCount--;
 	}
 
-	if (activePlayersCount == 1)
+	//finds winner and changes pointer. This could be done better but this works for now
+	if (activePlayersCount == 1)	
 		return true;
+	
 
 	return false;
 }
