@@ -26,36 +26,20 @@ void gameLoop()
 
 void runHand(Table& table)
 {
-	Player* winningPlayer = nullptr;
+	size_t winningPlayer = 100;
 	//1 for preflop, 2 for turn and 3 for river
 	int round = 1;
 
-	runRound(table, round, winningPlayer);
-	
-		
-	
-	
+	while(round < 3)
+	{
+		runRound(table, round, winningPlayer);
 
-	std::cin.get();
-	std::cin.get();
-
-
-
-	
-
-
-
-
-	//std::cout << "end hand" << std::endl;
-
-	//std::cin.get();
-
-	//std::cin.get();
+	}
 		
 }
 
 //this desperately needs refactoring at some point
-bool runRound(Table& table, int& round, Player*& winningPlayer)
+bool runRound(Table& table, int& round, size_t& winningPlayerIndex)
 {
 	
 
@@ -83,12 +67,12 @@ bool runRound(Table& table, int& round, Player*& winningPlayer)
 	size_t aggressingPlayerIndex = 1;
 	while (1)
 	{
-		if (playerHasWon(table))
+		if (currentPlayerHasWon(table, s))
 		{
 			
 
-			std::cout << "a player has won\n";
-
+			std::cout << table.getPlayers()[s].getName() << " has won\n";
+			std::cin.get();
 			return true;
 		}
 
@@ -224,19 +208,20 @@ bool runRound(Table& table, int& round, Player*& winningPlayer)
 	return false;
 }
 
-bool aPlayerHasWon(Table& table)
+bool currentPlayerHasWon(Table& table, int index)
 {
-	int activePlayersCount = table.getPlayerCount();
-	for (auto& player : table.getPlayers())
+	int playersLeft = table.getPlayerCount();
+	for (size_t i = 0; i < table.getPlayerCount(); ++i)
 	{
-		if (player.getFolded())
-			activePlayersCount--;
+		if (index == i)
+			continue;
+
+		if(table.getPlayers()[i].getFolded())
+			playersLeft--;
 	}
 
-	//finds winner and changes pointer. This could be done better but this works for now
-	if (activePlayersCount == 1)	
+	if (playersLeft == 1)
 		return true;
-	
 
 	return false;
 }
