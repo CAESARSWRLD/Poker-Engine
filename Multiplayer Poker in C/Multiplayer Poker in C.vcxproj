@@ -135,6 +135,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Card.hpp" />
+    <ClInclude Include="DebuggingTool.hpp" />
     <ClInclude Include="Functions.hpp" />
     <ClInclude Include="GameWrapper.hpp" />
     <ClInclude Include="Networking.hpp" />

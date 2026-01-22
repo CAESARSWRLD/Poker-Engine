@@ -4,7 +4,7 @@
 #include "Functions.hpp"
 #include "Networking.hpp"
 #include "VibeCodedFunctions.hpp"
-
+#include "DebuggingTool.hpp"
 void gameLoop()
 {
 	
@@ -26,22 +26,29 @@ void gameLoop()
 
 void runHand(Table& table)
 {
-	size_t winningPlayer = 100;
+	size_t winningPlayerIndex = 100;
 	//1 for preflop, 2 for turn and 3 for river
 	int round = 1;
 
-	while(round < 3)
+	while(round <= 3)
 	{
-		runRound(table, round, winningPlayer);
+		//runRound will return true when i player has won
+		if (runRound(table, round, winningPlayerIndex))
+		{
+			break;
+		}
 
+		table.setAllMadeActionsToFalse();
+		round++;
 	}
-		
+	
+	std::cout << table.getPlayers()[winningPlayerIndex].getName() << " has won\n";
 }
 
 //this desperately needs refactoring at some point
-bool runRound(Table& table, int& round, size_t& winningPlayerIndex)
+bool runRound(Table& table, int round, size_t& winningPlayerIndex)
 {
-	
+	//DebuggingTool debug;
 
 	bool bbOptionUsed = false;
 	
@@ -71,8 +78,8 @@ bool runRound(Table& table, int& round, size_t& winningPlayerIndex)
 		{
 			
 
-			std::cout << table.getPlayers()[s].getName() << " has won\n";
-			std::cin.get();
+			//std::cout << table.getPlayers()[s].getName() << " has won\n";
+			
 			return true;
 		}
 
@@ -195,7 +202,6 @@ bool runRound(Table& table, int& round, size_t& winningPlayerIndex)
 		}
 
 
-		//std::cin.get();
 
 		system("cls");
 		++s;
@@ -219,6 +225,9 @@ bool currentPlayerHasWon(Table& table, int index)
 		if(table.getPlayers()[i].getFolded())
 			playersLeft--;
 	}
+
+
+
 
 	if (playersLeft == 1)
 		return true;
