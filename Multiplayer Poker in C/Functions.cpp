@@ -5,6 +5,9 @@
 #include "Networking.hpp"
 #include "VibeCodedFunctions.hpp"
 #include "DebuggingTool.hpp"
+
+static bool debugging = true;
+
 void gameLoop()
 {
 	
@@ -19,7 +22,6 @@ void gameLoop()
 	{
 		runHand(table);
 
-		//pops back and pushes front to change player positions/indexes in table.getPlayers(). This uses std::deque
 		table.advancePositions();
 	}
 }
@@ -32,36 +34,32 @@ void runHand(Table& table)
 
 	while(round <= 3)
 	{
-		//runRound will return true when i player has won
+		//runRound will return true when a player has won
 		if (runRound(table, round, winningPlayerIndex))
 		{
+			std::cout << "WHERE????";
+			std::cin.get();
+			std::cin.get();
 			break;
 		}
 
-		table.setAllMadeActionsToFalse();
+		
+		
+
+		//table.setAllMadeActionsToFalse();
 		round++;
 	}
 	
-	std::cout << table.getPlayers()[winningPlayerIndex].getName() << " has won\n";
+	//std::cout << table.getPlayers()[winningPlayerIndex].getName() << " has won\n";
 }
 
 //this desperately needs refactoring at some point
 bool runRound(Table& table, int round, size_t& winningPlayerIndex)
 {
 	//DebuggingTool debug;
-
 	bool bbOptionUsed = false;
-	
-
-	
-
-	//currentTableBet starts as the big blind amount
 	double currentTableBet = table.getBigBlind();
 	double pot = table.getSmallBlind() + table.getBigBlind();
-
-	//index 0 of table.getPlayers() always small blind
-	// 
-	//following lines set small and big blind current bet sizes to the size of the blinds already stored in the table
 
 	table.getPlayers()[0].setCurrentBet(table.getSmallBlind());
 	table.getPlayers()[1].setCurrentBet(table.getBigBlind());
@@ -69,7 +67,7 @@ bool runRound(Table& table, int round, size_t& winningPlayerIndex)
 
 	//utg first to act preflop. sb first to act postflop
 	size_t s = 2;
-	if (round != 1)
+	if (round > 1)
 		s = 0;
 
 
