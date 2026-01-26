@@ -299,4 +299,21 @@ public:
 
 
 	}
+
+	bool foldedToBB()
+	{
+		int count = 0;
+		for (Player& player : players)
+		{
+			if (player.getIsBB())
+				continue;
+			if (player.getFolded() && !player.getIsBB())
+				count++;
+		}
+
+		if (count == getPlayerCount() - 1)
+			return true;
+
+		return false;
+	}
 };

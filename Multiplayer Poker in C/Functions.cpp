@@ -59,29 +59,37 @@ bool runRound(Table& table, int round, size_t& winningPlayerIndex)
 	double currentTableBet = table.getBigBlind();
 	double pot = table.getSmallBlind() + table.getBigBlind();
 
-	//index 0 of table.getPlayers() should always be the small blind
+	//index 0 of table.getPlayers() always small blind
 	// 
 	//following lines set small and big blind current bet sizes to the size of the blinds already stored in the table
 
 	table.getPlayers()[0].setCurrentBet(table.getSmallBlind());
 	table.getPlayers()[1].setCurrentBet(table.getBigBlind());
+	table.getPlayers()[1].setIsBB(true);
 
 	//utg first to act preflop. sb first to act postflop
 	size_t s = 2;
 	if (round != 1)
 		s = 0;
 
+
+
 	size_t aggressingPlayerIndex = 1;
 	while (1)
 	{
+		/*if (s == 1 && table.foldedToBB())
+		{
+			std::cout << table.getPlayers()[s].getName() << " has won\n";
+			return true;
+		}*/
+
 		if (currentPlayerHasWon(table, s))
 		{
-			
-
-			//std::cout << table.getPlayers()[s].getName() << " has won\n";
-			
+			std::cout << table.getPlayers()[s].getName() << " has won\n"; 
 			return true;
 		}
+			
+		
 
 		//button reached. return to small blind
 		if (s == table.getPlayers().size())
@@ -93,6 +101,13 @@ bool runRound(Table& table, int round, size_t& winningPlayerIndex)
 		}
 
 		Player& curPlayer = table.getPlayers()[s];
+
+		
+
+
+		
+
+
 		double currentPlayersBet = curPlayer.getCurrentBet();
 
 		if (curPlayer.getFolded())
@@ -125,7 +140,6 @@ bool runRound(Table& table, int round, size_t& winningPlayerIndex)
 		}
 
 		//in the future add this: Player curPlayer = table.getPlayers()[s]
-		
 
 		std::cout << "Player index: " << s << " with player name: " << table.getPlayers()[s].getName() << std::endl;
 

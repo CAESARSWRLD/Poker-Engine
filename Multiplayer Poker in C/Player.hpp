@@ -10,7 +10,7 @@ private:
 	double stackSize;
 	bool folded;
 	bool myTurn;
-
+	bool isBB;
 	double currentBet;
 
 	bool madeAction;
@@ -20,6 +20,7 @@ public:
 		folded = false;
 		myTurn = false;
 		madeAction = false;
+		isBB = false;
 	}
 
 	bool getMadeAction()const
@@ -65,5 +66,15 @@ public:
 	void setFolded(bool newFolded)
 	{
 		folded = newFolded;
+	}
+
+	bool getIsBB()const
+	{
+		return isBB;
+	}
+
+	void setIsBB(bool bbBool)
+	{
+		isBB = bbBool;
 	}
 };
