@@ -284,4 +284,19 @@ public:
 	{
 		return smallBlindIndex;
 	}
+
+	size_t getIndexOfFirstToAct()
+	{
+		size_t index = -1;
+		for (size_t i = 0;i < getPlayerCount(); ++i)
+		{
+			if (!players[i].getFolded())
+			{
+				index = i;
+				break;
+			}
+		}
+
+
+	}
 };
