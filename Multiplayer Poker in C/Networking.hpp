@@ -31,7 +31,7 @@ std::string facingBetProcessAnswer(double& betSize, double currentPlayersBet, do
 	}
 	else if (input == 2)
 	{
-		pot += betSize - currentPlayersBet;
+		pot += betSize;
 		currentPlayersBet = betSize;
 		return "call";
 

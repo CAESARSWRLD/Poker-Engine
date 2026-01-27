@@ -20,50 +20,63 @@ void gameLoop()
 
 	while(table.getPlayers().size() > minimumPlayercount)
 	{
+		std::cout << "New hand.\nPress enter to begin hand...";
+		std::cin.get();
+		std::cin.get();
 		runHand(table);
 
 		table.advancePositions();
+		table.resetPlayersBetweenHands();
+
 	}
 }
 
 void runHand(Table& table)
 {
-	size_t winningPlayerIndex = 100;
+	size_t winningPlayerIndex = 0;
 	//1 for preflop, 2 for turn and 3 for river
 	int round = 1;
 
 	while(round <= 3)
 	{
+		std::cout << "ROUND " << round << std::endl;
+
+
 		//runRound will return true when a player has won
 		if (runRound(table, round, winningPlayerIndex))
-		{
-			std::cout << "WHERE????";
-			std::cin.get();
-			std::cin.get();
 			break;
-		}
-
 		
 		
 
-		//table.setAllMadeActionsToFalse();
+		table.setAllMadeActionsToFalse_withinHand();
 		round++;
 	}
-	
+	std::cout << "Hand is over with. Player " << table.getPlayers()[winningPlayerIndex].getName() << " has won\n";
+
+	table.payTheWinner(table.getPlayers()[winningPlayerIndex]);
+
 	//std::cout << table.getPlayers()[winningPlayerIndex].getName() << " has won\n";
 }
 
 //this desperately needs refactoring at some point
-bool runRound(Table& table, int round, size_t& winningPlayerIndex)
+bool runRound(Table& table, int round, size_t& winningPlayerIndex, double& pot)
 {
 	//DebuggingTool debug;
 	bool bbOptionUsed = false;
 	double currentTableBet = table.getBigBlind();
-	double pot = table.getSmallBlind() + table.getBigBlind();
+	pot = table.getSmallBlind() + table.getBigBlind();
 
 	table.getPlayers()[0].setCurrentBet(table.getSmallBlind());
+	table.getPlayers()[0].reduceStackSizeBy(table.getSmallBlind());
+
 	table.getPlayers()[1].setCurrentBet(table.getBigBlind());
+	table.getPlayers()[1].reduceStackSizeBy(table.getBigBlind());
+
+	table.setPot(pot);
+
 	table.getPlayers()[1].setIsBB(true);
+
+	
 
 	//utg first to act preflop. sb first to act postflop
 	size_t s = 2;
@@ -81,9 +94,9 @@ bool runRound(Table& table, int round, size_t& winningPlayerIndex)
 			return true;
 		}*/
 
-		if (currentPlayerHasWon(table, s))
+		if (currentPlayerHasWon(table, winningPlayerIndex))
 		{
-			std::cout << table.getPlayers()[s].getName() << " has won\n"; 
+			std::cout << table.getPlayers()[winningPlayerIndex].getName() << " has won\n";
 			return true;
 		}
 			
@@ -127,7 +140,7 @@ bool runRound(Table& table, int round, size_t& winningPlayerIndex)
 			else if (action == "bet")
 			{
 				aggressingPlayerIndex = s;
-				table.setAllMadeActionsToFalse();
+				table.setAllMadeActionsToFalse_withinHand();
 				curPlayer.setCurrentBet(currentTableBet);
 				curPlayer.setMadeAction(true);
 				++s;
@@ -167,9 +180,11 @@ bool runRound(Table& table, int round, size_t& winningPlayerIndex)
 			{
 				aggressingPlayerIndex = s;
 
-				table.setAllMadeActionsToFalse();
+				table.setAllMadeActionsToFalse_withinHand();
 
 				curPlayer.setCurrentBet(currentTableBet);
+
+				curPlayer.reduceStackSizeBy(currentTableBet);
 			}
 			else
 			{
@@ -192,22 +207,20 @@ bool runRound(Table& table, int round, size_t& winningPlayerIndex)
 
 			if (action == "bet")
 			{
-				table.setAllMadeActionsToFalse();
+				table.setAllMadeActionsToFalse_withinHand();
 				curPlayer.setCurrentBet(currentTableBet);
 
+
+				curPlayer.reduceStackSizeBy(currentTableBet);
 			}
 
 			curPlayer.setMadeAction(true);
 		}
 
+		table.setPot(pot);
 
 
 
-
-		
-
-
-		
 		if (table.checkForEndOfRound())
 		{
 			break;
@@ -217,7 +230,6 @@ bool runRound(Table& table, int round, size_t& winningPlayerIndex)
 
 		system("cls");
 		++s;
-
 	}
 
 	std::cout << "END OF ROUND REACHED\n";
@@ -226,26 +238,29 @@ bool runRound(Table& table, int round, size_t& winningPlayerIndex)
 	return false;
 }
 
-bool currentPlayerHasWon(Table& table, int index)
+bool currentPlayerHasWon(Table& table, size_t& winnerIndex)
 {
-	int playersLeft = table.getPlayerCount();
+	size_t playersLeft = 0;
+	size_t lastStanding = 0;
+
 	for (size_t i = 0; i < table.getPlayerCount(); ++i)
 	{
-		if (index == i)
-			continue;
-
-		if(table.getPlayers()[i].getFolded())
-			playersLeft--;
+		if (!table.getPlayers()[i].getFolded())
+		{
+			playersLeft++;
+			lastStanding = i;
+		}
 	}
 
-
-
-
 	if (playersLeft == 1)
+	{
+		winnerIndex = lastStanding;
 		return true;
+	}
 
 	return false;
 }
+
 
 
 //use until a proper ui is added
@@ -262,14 +277,14 @@ void drawTable(Table& table)
 		if (players == 4)
 			break;
 	
-		std::cout << p.getName() << "[" << p.getMoneyAmount() << "]    ";
+		std::cout << p.getName() << "[" << p.getStackSize() << "]    ";
 	
 		players++;
 
 	}
 
 	std::cout << std::endl;
-
+	std::cout << "              sb          bb        utg                  \n";
 	std::cout << std::endl;
 	std::cout << "                  ********************************\n";
 	std::cout << "              ****************************************\n";
@@ -277,7 +292,7 @@ void drawTable(Table& table)
 	std::cout << "         **                                              **\n";
 	std::cout << "        **                                                **\n";
 	std::cout << "        **                                                 **\n";
-	std::cout << "        **                                                 **\n";
+	std::cout << "        **                  pot: "<<table.getPot() << "                         **\n";
 	std::cout << "        **                                                 **\n";
 	std::cout << "        **                                                 **\n";
 	std::cout << "        **                                                 **\n";
@@ -285,7 +300,7 @@ void drawTable(Table& table)
 	std::cout << "           **                                          **\n";
 	std::cout << "              ****************************************\n";
 	std::cout << "                  ********************************\n";
-
+	std::cout << "                            ";
 	std::cout << std::endl;
 
 	
@@ -297,12 +312,12 @@ void drawTable(Table& table)
 	if(players >= 4)
 	{
 		int count = 0;
-		for (auto& p : table.getPlayers())
+		while (count < table.getPlayerCount())
 		{
 
 			if (count >= 4)
 			{
-				std::cout << p.getName() << "[" << p.getMoneyAmount() << "]    ";
+				std::cout << table.getPlayers()[count].getName() << "[" << table.getPlayers()[count].getStackSize() << "]    ";
 			}
 			count++;
 		}

@@ -10,7 +10,7 @@ public:
 	DebuggingTool(){};
 
 	//returns inputted message. No more std::cout everywhere
-	void didWeMakeItHereMessage(std::string&& message)const
+	void message(std::string&& message)const
 	{
 		std::cout << message;
 		std::cin.get();

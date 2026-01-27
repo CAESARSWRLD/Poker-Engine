@@ -23,6 +23,16 @@ public:
 		isBB = false;
 	}
 
+	void addToStack(double amountToadd)
+	{
+		stackSize += amountToadd;
+	}
+
+	void reduceStackSizeBy(double amountToReduceBy)
+	{
+		stackSize -= amountToReduceBy;
+	}
+
 	bool getMadeAction()const
 	{
 		return madeAction;
@@ -48,10 +58,12 @@ public:
 		return name;
 	}
 
-	double getMoneyAmount()const
+	double getStackSize()const
 	{
 		return stackSize;
 	}
+
+	
 
 	void setCards(Card one, Card two){
 		cardOne = one;

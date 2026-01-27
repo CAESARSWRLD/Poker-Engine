@@ -22,6 +22,7 @@ private:
 	double smallBlind;
 	double bigBlind;
 	double betToCall;
+	double pot;
 public:
 
 	//this table constructor prompts the user for input. this constructor should be refactored when networking is added
@@ -30,6 +31,7 @@ public:
 		smallBlindIndex = 0;
 		betToCall = 0.0;
 		isRunning = true;
+		pot = 0.0;
 
 		int playersSoFar = 0;
 		while (playersSoFar < 2)
@@ -161,6 +163,8 @@ public:
 	Table(int playerCount)
 	{
 		betToCall = 0.0;
+		pot = 0.0;
+
 
 		while (playerCount > MAX_PLAYERS)
 		{
@@ -193,14 +197,45 @@ public:
 		//std::cout << "Debug table created" << std::endl;
 	}
 
+	void addToPot(double addedToPot)
+	{
+		pot += addedToPot;
+	}
+	
+	void setPot(double newPotAmount)
+	{
+		pot = newPotAmount;
+	}
+
+	void payTheWinner(Player& winner)
+	{
+		winner.addToStack(pot);
+		pot = 0;
+	}
+
+	double getPot()const
+	{
+		return pot;
+	}
+
 	//sets all madeAction booleans of table's active players to false. Make sure to set the aggressing player's madeAction to true after this is called. Used when a player bets or rasies
-	void setAllMadeActionsToFalse()
+	void setAllMadeActionsToFalse_withinHand()
 	{
 
 		for (auto& player : players)
 		{
 			if(!player.getFolded())
 				player.setMadeAction(false);
+		}
+	}
+
+	void resetPlayersBetweenHands()
+	{
+
+		for (auto& player : players)
+		{
+				player.setMadeAction(false);
+				player.setFolded(false);
 		}
 	}
 
