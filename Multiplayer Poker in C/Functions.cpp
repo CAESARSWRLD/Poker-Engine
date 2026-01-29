@@ -27,23 +27,24 @@ void gameLoop()
 
 		table.advancePositions();
 		table.resetPlayersBetweenHands();
-
+		table.setPot(0);
 	}
 }
 
 void runHand(Table& table)
 {
 	size_t winningPlayerIndex = 0;
+	
 	//1 for preflop, 2 for turn and 3 for river
 	int round = 1;
-
+	double pot = 0;
 	while(round <= 3)
 	{
 		std::cout << "ROUND " << round << std::endl;
 
 
 		//runRound will return true when a player has won
-		if (runRound(table, round, winningPlayerIndex))
+		if (runRound(table, round, winningPlayerIndex, pot))
 			break;
 		
 		
@@ -58,12 +59,8 @@ void runHand(Table& table)
 	//std::cout << table.getPlayers()[winningPlayerIndex].getName() << " has won\n";
 }
 
-//this desperately needs refactoring at some point
-bool runRound(Table& table, int round, size_t& winningPlayerIndex, double& pot)
+void initializeTable(Table& table, double& pot)
 {
-	//DebuggingTool debug;
-	bool bbOptionUsed = false;
-	double currentTableBet = table.getBigBlind();
 	pot = table.getSmallBlind() + table.getBigBlind();
 
 	table.getPlayers()[0].setCurrentBet(table.getSmallBlind());
@@ -75,6 +72,20 @@ bool runRound(Table& table, int round, size_t& winningPlayerIndex, double& pot)
 	table.setPot(pot);
 
 	table.getPlayers()[1].setIsBB(true);
+}
+
+//this desperately needs refactoring at some point
+bool runRound(Table& table, int round, size_t& winningPlayerIndex, double& pot)
+{
+
+	//DebuggingTool debug;
+	bool bbOptionUsed = false;
+	double currentTableBet = table.getBigBlind();
+
+	if(round == 1)
+	{
+		initializeTable(table, pot);
+	}
 
 	
 
@@ -88,15 +99,14 @@ bool runRound(Table& table, int round, size_t& winningPlayerIndex, double& pot)
 	size_t aggressingPlayerIndex = 1;
 	while (1)
 	{
-		/*if (s == 1 && table.foldedToBB())
-		{
-			std::cout << table.getPlayers()[s].getName() << " has won\n";
-			return true;
-		}*/
+
+
 
 		if (currentPlayerHasWon(table, winningPlayerIndex))
 		{
-			std::cout << table.getPlayers()[winningPlayerIndex].getName() << " has won\n";
+			table.setPot(pot);
+
+			std::cout << table.getPlayers()[winningPlayerIndex].getName() << " has won a pot of $" << pot << std::endl;
 			return true;
 		}
 			
@@ -114,22 +124,22 @@ bool runRound(Table& table, int round, size_t& winningPlayerIndex, double& pot)
 		Player& curPlayer = table.getPlayers()[s];
 
 		
-
-
-		
-
-
-		double currentPlayersBet = curPlayer.getCurrentBet();
-
 		if (curPlayer.getFolded())
 		{
 			++s;
 			continue;
 		}
+
+		
+
+
+		double currentPlayerPreviousBet = curPlayer.getCurrentBet();
+
+		
 		
 		//SPECIAL CASE
-		//bb option(if round equals 'preflop', player is bb and it calls/folds around)
-		if (round == 1 && s == 1 && currentPlayersBet == currentTableBet && !bbOptionUsed)
+		//bb option(if round equals 'preflop', player is bb and it limps/folds around)
+		if (round == 1 && s == 1 && currentPlayerPreviousBet == currentTableBet && !bbOptionUsed)
 		{
 			bbOptionUsed = true;
 			std::cout << "BB option\n";
@@ -167,11 +177,11 @@ bool runRound(Table& table, int round, size_t& winningPlayerIndex, double& pot)
 
 
 
-		if (currentPlayersBet < currentTableBet)
+		if (currentPlayerPreviousBet < currentTableBet)
 		{
 			std::cout << "If " << table.getPlayers()[s].getName() << " calls, they've already put in $" << table.getPlayers()[s].getCurrentBet() << std::endl;
 
-			std::string action = facingBetProcessAnswer(currentTableBet, currentPlayersBet, pot);
+			std::string action = facingBetProcessAnswer(currentTableBet, currentPlayerPreviousBet, pot);
 			if (action == "fold")
 			{
 				curPlayer.setFolded(true);
@@ -189,13 +199,18 @@ bool runRound(Table& table, int round, size_t& winningPlayerIndex, double& pot)
 			else
 			{
 				curPlayer.setCurrentBet(currentTableBet);
+				curPlayer.reduceStackSizeBy(currentTableBet);
+
 			}
 
 			curPlayer.setMadeAction(true);
 
 		}
-		else if (currentPlayersBet == currentTableBet && aggressingPlayerIndex == s)
+		else if (currentPlayerPreviousBet == currentTableBet && aggressingPlayerIndex == s)
 		{
+			table.setPot(pot);
+
+			// all other players called the current player's bet or it just checked around
 			break;
 		}
 		else

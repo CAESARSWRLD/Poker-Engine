@@ -6,5 +6,6 @@
 void gameLoop();
 void drawTable(Table& table);
 void runHand(Table& table);
-bool runRound(Table& table, int round, size_t& winningPlayerIndex);
+bool runRound(Table& table, int round, size_t& winningPlayerIndex, double& pot);
 bool currentPlayerHasWon(Table& table, size_t& winnerIndex);
+void initializeTable(Table& table, double& pot);
