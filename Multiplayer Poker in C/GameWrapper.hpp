@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 #include "Table.hpp"
-#include "Functions.hpp"
+#include "GameLogicFunctions.hpp"
 
 class GameWrapper
 {	

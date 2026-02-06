@@ -4,6 +4,7 @@
 class Player
 {
 private:
+	
 	Card cardOne;
 	Card cardTwo;
 	std::string name;

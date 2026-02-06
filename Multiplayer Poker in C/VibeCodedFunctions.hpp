@@ -1,7 +1,7 @@
 #include "Table.hpp"
 #include "Player.hpp"
 #include "Networking.hpp"
-#include "Functions.hpp"
+#include "GameLogicFunctions.hpp"
 
 //These functions were created with genAI
 

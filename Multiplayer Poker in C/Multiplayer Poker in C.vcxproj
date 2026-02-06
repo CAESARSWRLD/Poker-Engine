@@ -130,16 +130,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Functions.cpp" />
+    <ClCompile Include="GameLogicFunctions.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Table.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Card.hpp" />
     <ClInclude Include="DebuggingTool.hpp" />
-    <ClInclude Include="Functions.hpp" />
+    <ClInclude Include="GameLogicFunctions.hpp" />
     <ClInclude Include="GameWrapper.hpp" />
     <ClInclude Include="Networking.hpp" />
     <ClInclude Include="Player.hpp" />
+    <ClInclude Include="RoundData.hpp" />
     <ClInclude Include="Table.hpp" />
     <ClInclude Include="VibeCodedFunctions.hpp" />
   </ItemGroup>
