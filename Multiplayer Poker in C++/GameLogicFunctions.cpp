@@ -227,7 +227,7 @@ bool runRound(Table& table, int round, size_t& winningPlayerIndex, double& pot)
 		}
 		else if (currentPlayerPreviousBet == currentTableBet && aggressingPlayerIndex == s)
 		{
-			continue;
+			
 
 			// all other players called the current player's bet or it just checked around
 			break;
