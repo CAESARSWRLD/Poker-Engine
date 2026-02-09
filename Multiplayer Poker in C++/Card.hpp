@@ -7,17 +7,18 @@ class Card
 {
 private:
 	int value;
-	int suit;
+	char suit;
 public:
-	Card(int newVal, int newFace) : value(newVal), suit(newFace){}
-	Card() : value(0), suit(0) {}
+	Card(int newVal, char newSuit) : value(newVal), suit(newSuit){}
+	//f for default
+	Card() : value(0), suit('f') {}
 
 	int getValue()const
 	{
 		return value;
 	}
 
-	int getSuit()const
+	char getSuit()const
 	{
 		return suit;
 	}
@@ -25,12 +26,12 @@ public:
 	std::string getName()
 	{
 		
-		std::string vals[] = { "ace", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "jack", "queen", "king" };
-		std::string suits[] = { "clubs", "hearts", "diamonds", "spades" };
+		std::string vals[] = { "zero", "ace", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "jack", "queen", "king", "ace"};
+		char suits[] = { 'c', 'h', 'd', 's'};
 
-		std::string theName = vals[value] + " of " + suits[suit];
+		std::string name = vals[value] + " of " + suits[suit];
 
-		return theName;
+		return name;
 	}
 };
 

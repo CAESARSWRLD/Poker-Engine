@@ -34,6 +34,7 @@ void gameLoop()
 void runHand(Table& table)
 {
 
+
 	size_t winningPlayerIndex = 0;
 	
 	//1 for preflop, 2 for turn and 3 for river
