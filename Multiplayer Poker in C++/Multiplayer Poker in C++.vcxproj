@@ -130,6 +130,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Deck.cpp" />
     <ClCompile Include="GameLogicFunctions.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Table.cpp" />
@@ -137,6 +138,7 @@
   <ItemGroup>
     <ClInclude Include="Card.hpp" />
     <ClInclude Include="DebuggingTool.hpp" />
+    <ClInclude Include="Deck.hpp" />
     <ClInclude Include="GameLogicFunctions.hpp" />
     <ClInclude Include="GameWrapper.hpp" />
     <ClInclude Include="Networking.hpp" />
