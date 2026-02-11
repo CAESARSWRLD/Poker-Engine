@@ -13,7 +13,6 @@ Table::Table(int playerCount) : betToCall(0.0), pot(0.0), smallBlind(1.0), bigBl
 		std::cin >> playerCount;
 	}
 
-
 	std::string a = "a";
 
 	for (int i = 0; i < playerCount; ++i)
