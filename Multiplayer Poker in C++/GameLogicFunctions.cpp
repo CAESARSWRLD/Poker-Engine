@@ -31,20 +31,41 @@ void gameLoop()
 	}
 }
 
+std::string correspondingStreet(int round)
+{
+	switch (round)
+	{
+	case 1:
+		return "preflop";
+		break;
+	case 2:
+		return "flop";
+		break;
+	case 3:
+		return "turn";
+		break;
+	case 4:
+		return "river";
+		break;
+	default:
+		break;
+	}
+}
+
 void runHand(Table& table)
 {
 
 
 	size_t winningPlayerIndex = 0;
 	
-	//1 for preflop, 2 for turn and 3 for river
+	//1 for preflop, 2 for flop, 3 for turn an4 for river
 	double pot = 0;
 
 
 
-	while(globalRound <= 3)
+	while(globalRound <= 4)
 	{
-		std::cout << "ROUND " << globalRound << std::endl;
+		std::cout << "STREET: " << correspondingStreet(globalRound) << std::endl;
 
 
 		//runRound will return true when a player has won
@@ -60,7 +81,7 @@ void runHand(Table& table)
 
 
 
-	std::cout << "Hand is over with. Player " << table.getPlayers()[winningPlayerIndex].getName() << " has won\n";
+	std::cout << "Hand is over. Player " << table.getPlayers()[winningPlayerIndex].getName() << " has won\n";
 	
 
 	std::cout << table.getPlayers()[winningPlayerIndex].getStackSize() << " + " << pot;
@@ -82,6 +103,7 @@ void initializeTable(Table& table, double& pot)
 	table.getPlayers()[0].setCurrentBet(table.getSmallBlind());
 	table.getPlayers()[0].reduceStackSizeBy(table.getSmallBlind());
 
+
 	table.getPlayers()[1].setCurrentBet(table.getBigBlind());
 	table.getPlayers()[1].reduceStackSizeBy(table.getBigBlind());
 
@@ -93,6 +115,7 @@ void initializeTable(Table& table, double& pot)
 //this desperately needs refactoring at some point
 bool runRound(Table& table, int round, size_t& winningPlayerIndex, double& pot)
 {
+
 
 	//DebuggingTool debug;
 	bool bbOptionUsed = false;
@@ -110,12 +133,21 @@ bool runRound(Table& table, int round, size_t& winningPlayerIndex, double& pot)
 	if (round > 1)
 		s = 0;
 
-
+	//starting pot size for each round is tracked to easily determine if it checked through by comparing 
+	//pot size before and after all player actions
+	double startingPot = pot;
 
 	size_t aggressingPlayerIndex = 1;
 	while (1)
 	{
-
+		
+		if (round > 1 && table.checkIfCheckedThrough(startingPot))
+		{
+			std::cout << "CHECKED THROUGH. press enter...\n";
+			std::cin.get();
+			std::cin.get();
+			return false;
+		}
 
 
 		if (currentPlayerHasWon(table, winningPlayerIndex))
@@ -162,7 +194,10 @@ bool runRound(Table& table, int round, size_t& winningPlayerIndex, double& pot)
 			std::string action = facingCheckProcessAnswer(currentTableBet, pot);
 
 			if (action == "check")
+			{
+				curPlayer.setMadeAction(true);
 				break;
+			}
 			else if (action == "bet")
 			{
 				aggressingPlayerIndex = s;
@@ -170,7 +205,7 @@ bool runRound(Table& table, int round, size_t& winningPlayerIndex, double& pot)
 				curPlayer.setCurrentBet(currentTableBet);
 				curPlayer.setMadeAction(true);
 				++s;
-				system("cls");
+				//system("cls");
 				continue;
 			}
 
@@ -199,7 +234,7 @@ bool runRound(Table& table, int round, size_t& winningPlayerIndex, double& pot)
 
 		if (currentPlayerPreviousBet < currentTableBet)
 		{
-			std::cout << "If " << table.getPlayers()[s].getName() << " calls, they've already put in $" << table.getPlayers()[s].getCurrentBet() << std::endl;
+			//std::cout << "If " << table.getPlayers()[s].getName() << " calls, they've already put in $" << table.getPlayers()[s].getCurrentBet() << std::endl;
 
 			std::string action = facingBetProcessAnswer(currentTableBet, currentPlayerPreviousBet, pot);
 			if (action == "fold")
@@ -209,18 +244,19 @@ bool runRound(Table& table, int round, size_t& winningPlayerIndex, double& pot)
 			else if (action == "raise")
 			{
 				aggressingPlayerIndex = s;
-
 				table.setAllMadeActionsToFalse_withinHand();
-
 				curPlayer.setCurrentBet(currentTableBet);
-
 				curPlayer.reduceStackSizeBy(currentTableBet);
+			}
+			else if(action == "call")
+			{
+				curPlayer.setCurrentBet(currentTableBet);
+				curPlayer.reduceStackSizeBy(currentTableBet - currentPlayerPreviousBet);
+
 			}
 			else
 			{
-				curPlayer.setCurrentBet(currentTableBet);
-				curPlayer.reduceStackSizeBy(currentTableBet);
-
+				std::cout << "SOMETHING WENT WRONG (inside of runRound facingBet)\n";
 			}
 
 			curPlayer.setMadeAction(true);
@@ -263,18 +299,21 @@ bool runRound(Table& table, int round, size_t& winningPlayerIndex, double& pot)
 
 
 		table.setPot(pot);
-		system("cls");
+		//system("cls");
 		++s;
 	}
 
 
-	std::cout << "END OF ROUND REACHED\n";
-	std::cin.get();
+	
 
 	return false;
 }
 
 
+
+
+///THIS is going to be used to refactor the runRound function
+//
 //s represents the starting player index of the round
 void roundLoop(Table& table, size_t& winningPlayerIndex, size_t& s, bool& bbOptionUsed, double& currentTableBet, int round)
 {
@@ -528,7 +567,7 @@ void showPlayers(Table& table)
 	for (size_t index = 0; index < table.getPlayers().size(); ++index)
 	{
 		Player& curPlayer = table.getPlayers()[index];
-		std::cout << curPlayer.getName() << "  ";
+		std::cout << curPlayer.getName() << "  " << curPlayer.getStackSize() << "   ";
 		if (curPlayer.getFolded())
 			std::cout << "(folded)\n";
 		else

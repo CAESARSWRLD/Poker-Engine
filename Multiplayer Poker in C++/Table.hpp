@@ -40,7 +40,7 @@ public:
 		for (auto& p : players)
 		{
 			p.setCurrentBet(0);
-		 }
+		}
 	}
 
 	void addToPot(double addedToPot)
@@ -193,6 +193,20 @@ public:
 		}
 
 		if (count == getPlayerCount() - 1)
+			return true;
+
+		return false;
+	}
+
+	bool checkIfCheckedThrough(double startingPot)
+	{
+		for (auto& p : players)
+		{
+			if (!p.getMadeAction())
+				return false;
+		}
+
+		if (startingPot == pot)
 			return true;
 
 		return false;

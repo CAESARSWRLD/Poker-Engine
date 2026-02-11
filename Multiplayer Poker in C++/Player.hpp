@@ -10,7 +10,6 @@ private:
 	std::string name;
 	double stackSize;
 	bool folded;
-	bool myTurn;
 	bool isBB;
 	double currentBet;
 
@@ -19,7 +18,6 @@ public:
 
 	Player(std::string newName, double newStartingStack) : name(newName), stackSize(newStartingStack), cardOne(-1, -1), cardTwo(-1, -1), currentBet(0.0) {
 		folded = false;
-		myTurn = false;
 		madeAction = false;
 		isBB = false;
 	}

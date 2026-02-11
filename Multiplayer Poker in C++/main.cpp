@@ -5,8 +5,8 @@ int main()
 {
 	
 
-	Deck deck;
-	deck.printDeck();
+	//Deck deck;
+	//deck.printDeck();
 
 
 	GameWrapper gameWrapper;
