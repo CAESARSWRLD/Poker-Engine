@@ -68,6 +68,17 @@ void runHand(Table& table)
 		std::cout << "STREET: " << correspondingStreet(globalRound) << std::endl;
 
 
+		//reset each players previous bet tracker with each new round/street
+		if (globalRound > 1)
+		{
+			
+			for (auto& p : table.getPlayers())
+			{
+				if (!p.getFolded())
+					p.setCurrentBet(0);
+			}
+		}
+
 		//runRound will return true when a player has won
 		if (runRound(table, globalRound, winningPlayerIndex, pot))
 			break;
@@ -119,13 +130,21 @@ bool runRound(Table& table, int round, size_t& winningPlayerIndex, double& pot)
 
 	//DebuggingTool debug;
 	bool bbOptionUsed = false;
-	double currentTableBet = table.getBigBlind();
 
-	if(round == 1)
+	double currentTableBet = 0.0;
+
+
+	if (round == 1)
 	{
+		currentTableBet = table.getBigBlind();
 		initializeTable(table, pot);
 	}
 
+
+
+	
+
+	
 	
 
 	//utg first to act preflop. sb first to act postflop
@@ -211,7 +230,6 @@ bool runRound(Table& table, int round, size_t& winningPlayerIndex, double& pot)
 
 		}
 
-		//in the future add this: Player curPlayer = table.getPlayers()[s]
 
 		std::cout << "Player index: " << s << " with player name: " << table.getPlayers()[s].getName() << std::endl;
 
@@ -230,7 +248,7 @@ bool runRound(Table& table, int round, size_t& winningPlayerIndex, double& pot)
 		std::cout << "Player " << table.getPlayers()[s].getName() << std::endl;
 
 
-
+		std::cout << "current table bet: " << currentTableBet << ",  currentPlayerPreviousBet: " << currentPlayerPreviousBet << std::endl;
 
 		if (currentPlayerPreviousBet < currentTableBet)
 		{
