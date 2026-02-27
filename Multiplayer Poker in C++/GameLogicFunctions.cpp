@@ -5,7 +5,6 @@
 #include "Networking.hpp"
 #include "VibeCodedFunctions.hpp"
 
-static int globalRound = 1;
 void gameLoop()
 {
 	
@@ -50,17 +49,25 @@ Player& simpleRound(Table& table, double& pot)
 
 	table.setAllMadeActionsToFalse_withinHand();
 
-
-
-	if (!winnerFound)
+	int round = 2;
+	while (!winnerFound)
 	{
+		std::cout << correspondingStreet(round) << std::endl;
 
 		if (runPostflop(table, winnerIndex, pot))
 			winnerFound = true;
+
+
+		table.setAllMadeActionsToFalse_withinHand();
+
+		if(correspondingStreet(round) == "")
+		round++;
 	}
 
 	return table.getPlayers()[winnerIndex];
 }
+
+
 
 
 bool runPreflop(Table& table, size_t& winningPlayerIndex, double& pot)
@@ -246,9 +253,8 @@ bool runPreflop(Table& table, size_t& winningPlayerIndex, double& pot)
 
 bool runPostflop(Table& table, size_t& winningPlayerIndex, double& pot)
 {
-
-	//DebuggingTool debug;
-	double currentTableBet = table.getBigBlind();
+	//starting with small blind player postflop
+	double currentTableBet = 0.0;
 	size_t s = 0;
 
 
@@ -412,16 +418,16 @@ std::string correspondingStreet(int round)
 	switch (round)
 	{
 	case 1:
-		return "preflop";
+		return "\n\n***** PREFLOP *****";
 		break;
 	case 2:
-		return "flop";
+		return "\n\n***** FLOP *****";
 		break;
 	case 3:
-		return "turn";
+		return "\n\n***** TURN *****";
 		break;
 	case 4:
-		return "river";
+		return "\n\n***** RIVER *****";
 		break;
 	default:
 		break;
