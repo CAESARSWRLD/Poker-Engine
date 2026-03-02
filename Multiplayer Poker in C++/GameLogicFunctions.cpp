@@ -4,6 +4,7 @@
 #include "GameLogicFunctions.hpp"
 #include "Networking.hpp"
 #include "VibeCodedFunctions.hpp"
+#include "Deck.hpp"
 
 void gameLoop()
 {
@@ -32,6 +33,12 @@ void gameLoop()
 
 Player& simpleRound(Table& table, double& pot)
 {
+	Deck deck = Deck();
+	//deck.printDeck();
+
+	
+
+
 	bool winnerFound = false;
 	size_t winnerIndex = 0;
 	initializeTable(table, pot);
@@ -60,7 +67,6 @@ Player& simpleRound(Table& table, double& pot)
 
 		table.setAllMadeActionsToFalse_withinHand();
 
-		if(correspondingStreet(round) == "")
 		round++;
 	}
 
@@ -956,8 +962,8 @@ void showPlayers(Table& table)
 		Player& curPlayer = table.getPlayers()[index];
 		std::cout << curPlayer.getName() << "  " << curPlayer.getStackSize() << "   ";
 		if (curPlayer.getFolded())
-			std::cout << "(folded)\n";
+			std::cout << "(folded)   cards: " << curPlayer.getCardOne().getName() << "   " << curPlayer.getCardTwo().getName() << "\n";
 		else
-			std::cout << "(active)\n";
+			std::cout << "(active)   cards: " << curPlayer.getCardOne().getName() << "   " << curPlayer.getCardTwo().getName() << "\n";
 	}
 }

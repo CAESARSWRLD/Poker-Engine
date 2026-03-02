@@ -1,4 +1,5 @@
 #include "Table.hpp"
+#include "Deck.hpp"
 #include <istream>
 
 Table::Table(int playerCount) : betToCall(0.0), pot(0.0), smallBlind(1.0), bigBlind(2.0)
@@ -19,7 +20,7 @@ Table::Table(int playerCount) : betToCall(0.0), pot(0.0), smallBlind(1.0), bigBl
 	{
 		std::string name = "p" + std::to_string(i);
 		Player player(name, 100);
-
+		player.setCards(deck.getNextCard(), deck.getNextCard());
 
 		addPlayer(player);
 	}

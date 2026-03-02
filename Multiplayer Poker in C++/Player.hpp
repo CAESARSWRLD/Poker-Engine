@@ -16,10 +16,11 @@ private:
 	bool madeAction;
 public:
 
-	Player(std::string newName, double newStartingStack) : name(newName), stackSize(newStartingStack), cardOne(-1, -1), cardTwo(-1, -1), currentBet(0.0) {
+	Player(std::string newName, double newStartingStack) : name(newName), stackSize(newStartingStack), cardOne(-1, -1, true), cardTwo(-1, -1, true), currentBet(0.0) {
 		folded = false;
 		madeAction = false;
 		isBB = false;
+		
 	}
 
 	void addToStack(double amountToadd)
@@ -67,6 +68,16 @@ public:
 	void setCards(Card one, Card two){
 		cardOne = one;
 		cardTwo = two;
+	}
+
+	Card getCardOne()const 
+	{
+		return cardOne;
+	}
+
+	Card getCardTwo()const
+	{
+		return cardTwo;
 	}
 
 	bool getFolded()const

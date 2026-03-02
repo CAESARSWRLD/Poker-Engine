@@ -8,6 +8,7 @@
 #include <iostream>
 #include "Player.hpp"
 #include "Card.hpp"
+#include "Deck.hpp"
 
 constexpr int MAX_PLAYERS = 8;
 
@@ -23,6 +24,8 @@ private:
 	double bigBlind;
 	double betToCall;
 	double pot;
+	Deck deck;
+	std::vector<Card> board;
 public:
 
 

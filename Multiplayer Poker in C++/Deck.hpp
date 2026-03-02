@@ -13,5 +13,4 @@ public:
 	void printDeck();
 	Card getNextCard();
 
-
 };
