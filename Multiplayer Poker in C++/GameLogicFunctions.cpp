@@ -4,10 +4,7 @@
 #include "GameLogicFunctions.hpp"
 #include "Networking.hpp"
 #include "VibeCodedFunctions.hpp"
-#include "DebuggingTool.hpp"
 
-static bool debugging = true;
-static int globalRound = 1;
 void gameLoop()
 {
 	
@@ -31,21 +28,406 @@ void gameLoop()
 	}
 }
 
+
+
+Player& simpleRound(Table& table, double& pot)
+{
+	bool winnerFound = false;
+	size_t winnerIndex = 0;
+	initializeTable(table, pot);
+
+	if (runPreflop(table, winnerIndex, pot))
+	{
+		winnerFound = true;
+		std::cout << "A player has won";
+	}
+	else
+	{
+		std::cout << "No player has won. Go to post flop streets\n";
+
+	}
+
+	table.setAllMadeActionsToFalse_withinHand();
+
+	int round = 2;
+	while (!winnerFound)
+	{
+		std::cout << correspondingStreet(round) << std::endl;
+
+		if (runPostflop(table, winnerIndex, pot))
+			winnerFound = true;
+
+
+		table.setAllMadeActionsToFalse_withinHand();
+
+		if(correspondingStreet(round) == "")
+		round++;
+	}
+
+	return table.getPlayers()[winnerIndex];
+}
+
+
+
+
+bool runPreflop(Table& table, size_t& winningPlayerIndex, double& pot)
+{
+
+	//DebuggingTool debug;
+	bool bbOptionUsed = false;
+	double currentTableBet = table.getBigBlind();
+
+
+	size_t s = 2;
+
+
+
+
+	//starting pot size for each round is tracked to easily determine if it checked through by comparing 
+	//pot size before and after all player actions
+	double startingPot = pot;
+
+	size_t aggressingPlayerIndex = 1;
+	while (1)
+	{
+
+
+
+
+		if (currentPlayerHasWon(table, winningPlayerIndex))
+		{
+			table.setPot(pot);
+			//table.payTheWinner(table.getPlayers()[winningPlayerIndex], pot);
+			std::cout << table.getPlayers()[winningPlayerIndex].getName() << " has won a pot of $" << pot << std::endl;
+			return true;
+		}
+
+
+
+		//button reached. return to small blind
+		if (s == table.getPlayers().size())
+		{
+			s = 0;
+			system("cls");
+
+			continue;
+		}
+
+		Player& curPlayer = table.getPlayers()[s];
+
+
+		if (curPlayer.getFolded())
+		{
+			++s;
+			continue;
+		}
+
+
+
+
+		double currentPlayerPreviousBet = curPlayer.getCurrentBet();
+
+
+
+		//SPECIAL CASE
+		//player is bb and it limps/folds around)
+		if (s == 1 && currentPlayerPreviousBet == currentTableBet && !bbOptionUsed)
+		{
+			bbOptionUsed = true;
+			std::cout << "BB option\n";
+			std::string action = facingCheckProcessAnswer(currentTableBet, pot);
+
+			if (action == "check")
+			{
+				curPlayer.setMadeAction(true);
+				return false;
+			}
+			else if (action == "bet")
+			{
+				aggressingPlayerIndex = s;
+				table.setAllMadeActionsToFalse_withinHand();
+				curPlayer.setCurrentBet(currentTableBet);
+				curPlayer.setMadeAction(true);
+				++s;
+				//system("cls");
+				continue;
+			}
+
+		}
+
+		//in the future add this: Player curPlayer = table.getPlayers()[s]
+
+		std::cout << "Player index: " << s << " with player name: " << table.getPlayers()[s].getName() << std::endl;
+
+		std::cout << "CURRENT BET SIZE " << currentTableBet << std::endl;
+		//std::cout << "small: " << table.getPlayers()[0].getName() << " with $" << table.getPlayers()[0].getCurrentBet() << std::endl;
+		//std::cout << "big: " << table.getPlayers()[1].getName() << " with $" << table.getPlayers()[1].getCurrentBet() << std::endl;
+		std::cout << "POT: " << pot << std::endl;
+
+		std::cout << "\n\n";
+		showPlayers(table);
+		std::cout << "\n\n";
+
+
+		std::cout << table.getPlayers()[s].getName() << "'s turn. Select action\n";
+
+		std::cout << "Player " << table.getPlayers()[s].getName() << std::endl;
+
+
+
+
+		if (currentPlayerPreviousBet < currentTableBet)
+		{
+			//std::cout << "If " << table.getPlayers()[s].getName() << " calls, they've already put in $" << table.getPlayers()[s].getCurrentBet() << std::endl;
+
+			std::string action = facingBetProcessAnswer(currentTableBet, currentPlayerPreviousBet, pot);
+			if (action == "fold")
+			{
+				curPlayer.setFolded(true);
+			}
+			else if (action == "raise")
+			{
+				aggressingPlayerIndex = s;
+				table.setAllMadeActionsToFalse_withinHand();
+				curPlayer.setCurrentBet(currentTableBet);
+				curPlayer.reduceStackSizeBy(currentTableBet);
+			}
+			else if (action == "call")
+			{
+				curPlayer.setCurrentBet(currentTableBet);
+				curPlayer.reduceStackSizeBy(currentTableBet - currentPlayerPreviousBet);
+
+			}
+			else
+			{
+				std::cout << "SOMETHING WENT WRONG (inside of runRound facingBet)\n";
+			}
+
+			curPlayer.setMadeAction(true);
+
+		}
+		else if (currentPlayerPreviousBet == currentTableBet && aggressingPlayerIndex == s)
+		{
+
+
+			// all other players called the current player's bet or it just checked around
+			return false;
+		}
+		else
+		{
+
+
+			std::string action = facingCheckProcessAnswer(currentTableBet, pot);
+
+
+			if (action == "bet")
+			{
+				table.setAllMadeActionsToFalse_withinHand();
+				curPlayer.setCurrentBet(currentTableBet);
+
+
+				curPlayer.reduceStackSizeBy(currentTableBet);
+			}
+
+			curPlayer.setMadeAction(true);
+		}
+
+		table.setPot(pot);
+
+
+
+		if (table.checkForEndOfRound())
+		{
+			return false;
+		}
+
+
+		++s;
+	}
+
+
+
+
+
+}
+
+bool runPostflop(Table& table, size_t& winningPlayerIndex, double& pot)
+{
+	//starting with small blind player postflop
+	double currentTableBet = 0.0;
+	size_t s = 0;
+
+
+	//starting pot size for each round is tracked to easily determine if it checked through by comparing 
+	//pot size before and after all player actions
+	double startingPot = pot;
+
+	size_t aggressingPlayerIndex = 1;
+	while (1)
+	{
+
+		if (table.checkIfCheckedThrough(startingPot))
+		{
+			std::cout << "CHECKED THROUGH. press enter...\n";
+			std::cin.get();
+			std::cin.get();
+			return false;
+		}
+
+
+		if (currentPlayerHasWon(table, winningPlayerIndex))
+		{
+			table.setPot(pot);
+			//table.payTheWinner(table.getPlayers()[winningPlayerIndex], pot);
+			std::cout << table.getPlayers()[winningPlayerIndex].getName() << " has won a pot of $" << pot << std::endl;
+			return true;
+		}
+
+
+
+		//button reached. return to small blind
+		if (s == table.getPlayers().size())
+		{
+			s = 0;
+			system("cls");
+
+			continue;
+		}
+
+		Player& curPlayer = table.getPlayers()[s];
+
+
+		if (curPlayer.getFolded())
+		{
+			++s;
+			continue;
+		}
+
+
+
+
+		double currentPlayerPreviousBet = curPlayer.getCurrentBet();
+
+
+
+
+
+		//in the future add this: Player curPlayer = table.getPlayers()[s]
+
+		std::cout << "Player index: " << s << " with player name: " << table.getPlayers()[s].getName() << std::endl;
+
+		std::cout << "CURRENT BET SIZE " << currentTableBet << std::endl;
+		//std::cout << "small: " << table.getPlayers()[0].getName() << " with $" << table.getPlayers()[0].getCurrentBet() << std::endl;
+		//std::cout << "big: " << table.getPlayers()[1].getName() << " with $" << table.getPlayers()[1].getCurrentBet() << std::endl;
+		std::cout << "POT: " << pot << std::endl;
+
+		std::cout << "\n\n";
+		showPlayers(table);
+		std::cout << "\n\n";
+
+
+		std::cout << table.getPlayers()[s].getName() << "'s turn. Select action\n";
+
+		std::cout << "Player " << table.getPlayers()[s].getName() << std::endl;
+
+
+
+
+		if (currentPlayerPreviousBet < currentTableBet)
+		{
+			//std::cout << "If " << table.getPlayers()[s].getName() << " calls, they've already put in $" << table.getPlayers()[s].getCurrentBet() << std::endl;
+
+			std::string action = facingBetProcessAnswer(currentTableBet, currentPlayerPreviousBet, pot);
+			if (action == "fold")
+			{
+				curPlayer.setFolded(true);
+			}
+			else if (action == "raise")
+			{
+				aggressingPlayerIndex = s;
+				table.setAllMadeActionsToFalse_withinHand();
+				curPlayer.setCurrentBet(currentTableBet);
+				curPlayer.reduceStackSizeBy(currentTableBet);
+			}
+			else if (action == "call")
+			{
+				curPlayer.setCurrentBet(currentTableBet);
+				curPlayer.reduceStackSizeBy(currentTableBet - currentPlayerPreviousBet);
+
+			}
+			else
+			{
+				std::cout << "SOMETHING WENT WRONG (inside of runRound facingBet)\n";
+			}
+
+			curPlayer.setMadeAction(true);
+
+		}
+		else if (currentPlayerPreviousBet == currentTableBet && aggressingPlayerIndex == s)
+		{
+
+
+			// all other players called the current player's bet or it just checked around
+			break;
+		}
+		else
+		{
+
+
+			std::string action = facingCheckProcessAnswer(currentTableBet, pot);
+
+
+			if (action == "bet")
+			{
+				table.setAllMadeActionsToFalse_withinHand();
+				curPlayer.setCurrentBet(currentTableBet);
+
+
+				curPlayer.reduceStackSizeBy(currentTableBet);
+			}
+
+			curPlayer.setMadeAction(true);
+		}
+
+		table.setPot(pot);
+
+
+
+		if (table.checkForEndOfRound())
+		{
+			break;
+		}
+
+
+		table.setPot(pot);
+		//system("cls");
+		++s;
+	}
+
+
+
+
+	return false;
+
+
+
+}
+
 std::string correspondingStreet(int round)
 {
 	switch (round)
 	{
 	case 1:
-		return "preflop";
+		return "\n\n***** PREFLOP *****";
 		break;
 	case 2:
-		return "flop";
+		return "\n\n***** FLOP *****";
 		break;
 	case 3:
-		return "turn";
+		return "\n\n***** TURN *****";
 		break;
 	case 4:
-		return "river";
+		return "\n\n***** RIVER *****";
 		break;
 	default:
 		break;
@@ -56,49 +438,36 @@ void runHand(Table& table)
 {
 
 
-	size_t winningPlayerIndex = 0;
 	
 	//1 for preflop, 2 for flop, 3 for turn an4 for river
 	double pot = 0;
 
 
 
-	while(globalRound <= 4)
-	{
-		std::cout << "STREET: " << correspondingStreet(globalRound) << std::endl;
+	
+	//std::cout << "STREET: " << correspondingStreet(globalRound) << std::endl;
 
 
-		//reset each players previous bet tracker with each new round/street
-		if (globalRound > 1)
-		{
+	//simpleRound will return the winning player
+	Player& winner = simpleRound(table, pot);
 			
-			for (auto& p : table.getPlayers())
-			{
-				if (!p.getFolded())
-					p.setCurrentBet(0);
-			}
-		}
-
-		//runRound will return true when a player has won
-		if (runRound(table, globalRound, winningPlayerIndex, pot))
-			break;
 		
 		
 
-		table.setAllMadeActionsToFalse_withinHand();
-		globalRound++;
-	}
-
-
-
-
-	std::cout << "Hand is over. Player " << table.getPlayers()[winningPlayerIndex].getName() << " has won\n";
+	//table.setAllMadeActionsToFalse_withinHand();
+	//globalRound++;
 	
 
-	std::cout << table.getPlayers()[winningPlayerIndex].getStackSize() << " + " << pot;
 
-	std::cout << table.getPlayers()[winningPlayerIndex].getName() << " wins $" << pot<< "\n\n\n";
-	table.payTheWinner(table.getPlayers()[winningPlayerIndex], pot);
+
+
+	std::cout << "Hand is over. Player " << winner.getName() << " has won\n";
+	
+
+	std::cout << winner.getName() << " + " << pot << std::endl;
+
+	std::cout << winner.getName() << " wins $" << pot<< "\n\n\n";
+	table.payTheWinner(winner, pot);
 
 
 
@@ -123,7 +492,7 @@ void initializeTable(Table& table, double& pot)
 	table.getPlayers()[1].setIsBB(true);
 }
 
-//this desperately needs refactoring at some point
+//Use simpleRound instead intead of this garbage. Making a single function with a loop to handle every street was a bad idea.
 bool runRound(Table& table, int round, size_t& winningPlayerIndex, double& pot)
 {
 
@@ -332,7 +701,7 @@ bool runRound(Table& table, int round, size_t& winningPlayerIndex, double& pot)
 
 ///THIS is going to be used to refactor the runRound function
 //
-//s represents the starting player index of the round
+//s represents the starting player index of the round. Too many input parameters. simplifiy
 void roundLoop(Table& table, size_t& winningPlayerIndex, size_t& s, bool& bbOptionUsed, double& currentTableBet, int round)
 {
 	double pot = table.getPot();

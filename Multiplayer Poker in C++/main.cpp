@@ -5,9 +5,6 @@ int main()
 {
 	
 
-	//Deck deck;
-	//deck.printDeck();
-
 
 	GameWrapper gameWrapper;
 	gameWrapper.menuLoop();

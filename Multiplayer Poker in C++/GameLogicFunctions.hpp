@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <iostream>
 #include "Table.hpp"
+#include "Player.hpp"
 
 void gameLoop();
 void drawTable(Table& table);
@@ -12,4 +13,6 @@ void initializeTable(Table& table, double& pot);
 void roundLoop(Table& table, size_t& winningPlayerIndex, size_t& s, bool& bbOptionUsed, double& currentTableBet, int round);
 void showPlayers(Table& table);
 std::string correspondingStreet(int round);
-
+Player& simpleRound(Table& table, double& pot);
+bool runPreflop(Table& table, size_t& winningPlayerIndex, double& pot);
+bool runPostflop(Table& table, size_t& winningPlayerIndex, double& pot);
