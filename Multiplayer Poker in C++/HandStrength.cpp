@@ -17,14 +17,20 @@ int determineHandStrength(Player& player, Table& table)
 	return strength;
 }
 
+//can't use std::sort since cards are not comparible to eachother unless their int value is accessed
+void sortCardsInPlace(std::vector<Card>& cards)
+{
+
+}
+
 bool findBestHand(Player& player, std::vector<Card> board)
 {
 	Card cardOne = player.getCardOne();
 	Card cardTwo = player.getCardTwo();
 
 	std::vector<Card> cards = board;
-	board.push_back(cardOne);
-	board.push_back(cardTwo);
+	cards.push_back(cardOne);
+	cards.push_back(cardTwo);
 
 
 	for (auto& card : cards)
@@ -32,6 +38,18 @@ bool findBestHand(Player& player, std::vector<Card> board)
 		cout << card.getName() << endl;
 	}
 
+	cout << "\n";
+
+	//sort cards by value
+
+
+
+
+
+	for (auto& card : cards)
+	{
+		cout << card.getName() << endl;
+	}
 
 	// should return an integer to represent hand strength, 
 	// then players hand can be compared using the int returned by this function

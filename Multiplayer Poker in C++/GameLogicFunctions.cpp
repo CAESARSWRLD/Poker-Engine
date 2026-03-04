@@ -5,6 +5,7 @@
 #include "Networking.hpp"
 #include "VibeCodedFunctions.hpp"
 #include "Deck.hpp"
+#include "HandStrength.hpp"
 
 using std::cout;
 using std::endl;
@@ -39,7 +40,21 @@ Player& simpleRound(Table& table, double& pot)
 	Deck deck = Deck();
 	//deck.printDeck();
 
+	std::vector<Card> fakeBoard = {};
 	
+	for (int i = 0; i < 5; i++)
+	{
+
+		Card card1 = deck.getNextCard();
+		fakeBoard.push_back(card1);
+	}
+
+	
+	
+
+
+	findBestHand(table.getPlayers()[0], fakeBoard);
+
 
 
 	bool winnerFound = false;
@@ -49,11 +64,11 @@ Player& simpleRound(Table& table, double& pot)
 	if (runPreflop(table, winnerIndex, pot))
 	{
 		winnerFound = true;
-		std::cout << "A player has won";
+		cout << "A player has won";
 	}
 	else
 	{
-		std::cout << "No player has won. Go to post flop streets\n";
+		cout << "No player has won. Go to post flop streets\n";
 
 	}
 
@@ -62,7 +77,7 @@ Player& simpleRound(Table& table, double& pot)
 	int round = 2;
 	while (!winnerFound)
 	{
-		std::cout << correspondingStreet(round) << std::endl;
+		cout << correspondingStreet(round) << endl;
 
 		if (runPostflop(table, winnerIndex, pot))
 			winnerFound = true;
@@ -109,7 +124,7 @@ bool runPreflop(Table& table, size_t& winningPlayerIndex, double& pot)
 		{
 			table.setPot(pot);
 			//table.payTheWinner(table.getPlayers()[winningPlayerIndex], pot);
-			std::cout << table.getPlayers()[winningPlayerIndex].getName() << " has won a pot of $" << pot << std::endl;
+			cout << table.getPlayers()[winningPlayerIndex].getName() << " has won a pot of $" << pot << endl;
 			return true;
 		}
 
@@ -168,21 +183,21 @@ bool runPreflop(Table& table, size_t& winningPlayerIndex, double& pot)
 
 		//in the future add this: Player curPlayer = table.getPlayers()[s]
 
-		std::cout << "Player index: " << s << " with player name: " << table.getPlayers()[s].getName() << std::endl;
+		cout << "Player index: " << s << " with player name: " << table.getPlayers()[s].getName() << endl;
 
-		std::cout << "CURRENT BET SIZE " << currentTableBet << std::endl;
+		cout << "CURRENT BET SIZE " << currentTableBet << endl;
 		//std::cout << "small: " << table.getPlayers()[0].getName() << " with $" << table.getPlayers()[0].getCurrentBet() << std::endl;
 		//std::cout << "big: " << table.getPlayers()[1].getName() << " with $" << table.getPlayers()[1].getCurrentBet() << std::endl;
-		std::cout << "POT: " << pot << std::endl;
+		cout << "POT: " << pot << endl;
 
-		std::cout << "\n\n";
+		cout << "\n\n";
 		showPlayers(table);
-		std::cout << "\n\n";
+		cout << "\n\n";
 
 
-		std::cout << table.getPlayers()[s].getName() << "'s turn. Select action\n";
+		cout << table.getPlayers()[s].getName() << "'s turn. Select action\n";
 
-		std::cout << "Player " << table.getPlayers()[s].getName() << std::endl;
+		cout << "Player " << table.getPlayers()[s].getName() << endl;
 
 
 
@@ -211,7 +226,7 @@ bool runPreflop(Table& table, size_t& winningPlayerIndex, double& pot)
 			}
 			else
 			{
-				std::cout << "SOMETHING WENT WRONG (inside of runRound facingBet)\n";
+				cout << "SOMETHING WENT WRONG (inside of runRound facingBet)\n";
 			}
 
 			curPlayer.setMadeAction(true);
@@ -279,7 +294,7 @@ bool runPostflop(Table& table, size_t& winningPlayerIndex, double& pot)
 
 		if (table.checkIfCheckedThrough(startingPot))
 		{
-			std::cout << "CHECKED THROUGH. press enter...\n";
+			cout << "CHECKED THROUGH. press enter...\n";
 			std::cin.get();
 			std::cin.get();
 			return false;
@@ -290,7 +305,7 @@ bool runPostflop(Table& table, size_t& winningPlayerIndex, double& pot)
 		{
 			table.setPot(pot);
 			//table.payTheWinner(table.getPlayers()[winningPlayerIndex], pot);
-			std::cout << table.getPlayers()[winningPlayerIndex].getName() << " has won a pot of $" << pot << std::endl;
+			cout << table.getPlayers()[winningPlayerIndex].getName() << " has won a pot of $" << pot << endl;
 			return true;
 		}
 
@@ -325,21 +340,21 @@ bool runPostflop(Table& table, size_t& winningPlayerIndex, double& pot)
 
 		//in the future add this: Player curPlayer = table.getPlayers()[s]
 
-		std::cout << "Player index: " << s << " with player name: " << table.getPlayers()[s].getName() << std::endl;
+		cout << "Player index: " << s << " with player name: " << table.getPlayers()[s].getName() << endl;
 
-		std::cout << "CURRENT BET SIZE " << currentTableBet << std::endl;
+		cout << "CURRENT BET SIZE " << currentTableBet << endl;
 		//std::cout << "small: " << table.getPlayers()[0].getName() << " with $" << table.getPlayers()[0].getCurrentBet() << std::endl;
 		//std::cout << "big: " << table.getPlayers()[1].getName() << " with $" << table.getPlayers()[1].getCurrentBet() << std::endl;
-		std::cout << "POT: " << pot << std::endl;
+		cout << "POT: " << pot << endl;
 
-		std::cout << "\n\n";
+		cout << "\n\n";
 		showPlayers(table);
-		std::cout << "\n\n";
+		cout << "\n\n";
 
 
-		std::cout << table.getPlayers()[s].getName() << "'s turn. Select action\n";
+		cout << table.getPlayers()[s].getName() << "'s turn. Select action\n";
 
-		std::cout << "Player " << table.getPlayers()[s].getName() << std::endl;
+		cout << "Player " << table.getPlayers()[s].getName() << endl;
 
 
 
@@ -472,12 +487,12 @@ void runHand(Table& table)
 
 
 
-	std::cout << "Hand is over. Player " << winner.getName() << " has won\n";
+	cout << "Hand is over. Player " << winner.getName() << " has won\n";
 	
 
-	std::cout << winner.getName() << " + " << pot << std::endl;
+	cout << winner.getName() << " + " << pot << endl;
 
-	std::cout << winner.getName() << " wins $" << pot<< "\n\n\n";
+	cout << winner.getName() << " wins $" << pot<< "\n\n\n";
 	table.payTheWinner(winner, pot);
 
 
@@ -554,7 +569,7 @@ bool runRound(Table& table, int round, size_t& winningPlayerIndex, double& pot)
 		{
 			table.setPot(pot);
 			//table.payTheWinner(table.getPlayers()[winningPlayerIndex], pot);
-			std::cout << table.getPlayers()[winningPlayerIndex].getName() << " has won a pot of $" << pot << std::endl;
+			cout << table.getPlayers()[winningPlayerIndex].getName() << " has won a pot of $" << pot << endl;
 			return true;
 		}
 			
@@ -590,7 +605,7 @@ bool runRound(Table& table, int round, size_t& winningPlayerIndex, double& pot)
 		if (round == 1 && s == 1 && currentPlayerPreviousBet == currentTableBet && !bbOptionUsed)
 		{
 			bbOptionUsed = true;
-			std::cout << "BB option\n";
+			cout << "BB option\n";
 			std::string action = facingCheckProcessAnswer(currentTableBet, pot);
 
 			if (action == "check")
@@ -612,24 +627,24 @@ bool runRound(Table& table, int round, size_t& winningPlayerIndex, double& pot)
 		}
 
 
-		std::cout << "Player index: " << s << " with player name: " << table.getPlayers()[s].getName() << std::endl;
+		cout << "Player index: " << s << " with player name: " << table.getPlayers()[s].getName() << endl;
 
-		std::cout << "CURRENT BET SIZE " << currentTableBet << std::endl;
+		cout << "CURRENT BET SIZE " << currentTableBet << endl;
 		//std::cout << "small: " << table.getPlayers()[0].getName() << " with $" << table.getPlayers()[0].getCurrentBet() << std::endl;
 		//std::cout << "big: " << table.getPlayers()[1].getName() << " with $" << table.getPlayers()[1].getCurrentBet() << std::endl;
-		std::cout << "POT: " << pot << std::endl;
+		cout << "POT: " << pot << endl;
 
-		std::cout << "\n\n";
+		cout << "\n\n";
 		showPlayers(table);
-		std::cout << "\n\n";
+		cout << "\n\n";
 
 		
-		std::cout << table.getPlayers()[s].getName() << "'s turn. Select action\n";
+		cout << table.getPlayers()[s].getName() << "'s turn. Select action\n";
 
-		std::cout << "Player " << table.getPlayers()[s].getName() << std::endl;
+		cout << "Player " << table.getPlayers()[s].getName() << endl;
 
 
-		std::cout << "current table bet: " << currentTableBet << ",  currentPlayerPreviousBet: " << currentPlayerPreviousBet << std::endl;
+		cout << "current table bet: " << currentTableBet << ",  currentPlayerPreviousBet: " << currentPlayerPreviousBet << endl;
 
 		if (currentPlayerPreviousBet < currentTableBet)
 		{
@@ -655,7 +670,7 @@ bool runRound(Table& table, int round, size_t& winningPlayerIndex, double& pot)
 			}
 			else
 			{
-				std::cout << "SOMETHING WENT WRONG (inside of runRound facingBet)\n";
+				cout << "SOMETHING WENT WRONG (inside of runRound facingBet)\n";
 			}
 
 			curPlayer.setMadeAction(true);
