@@ -12,6 +12,14 @@ Deck::Deck()
 	}
 }
 
+void Deck::setAllToUnused()
+{
+	for (auto& card : cards)
+	{
+		if (card.getUsed())
+			card.setUsed(false);
+	}
+}
 
 void Deck::printDeck()
 {

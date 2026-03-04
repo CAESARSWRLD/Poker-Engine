@@ -6,6 +6,9 @@
 #include "VibeCodedFunctions.hpp"
 #include "Deck.hpp"
 
+using std::cout;
+using std::endl;
+
 void gameLoop()
 {
 	
@@ -69,6 +72,8 @@ Player& simpleRound(Table& table, double& pot)
 
 		round++;
 	}
+
+
 
 	return table.getPlayers()[winnerIndex];
 }
@@ -442,7 +447,7 @@ std::string correspondingStreet(int round)
 
 void runHand(Table& table)
 {
-
+	table.assignNewCards();
 
 	
 	//1 for preflop, 2 for flop, 3 for turn an4 for river
@@ -480,6 +485,7 @@ void runHand(Table& table)
 	//reset table:
 	table.setAllMadeActionsToFalse_withinHand();
 	table.resetPlayerBetSizes();
+
 }
 
 void initializeTable(Table& table, double& pot)

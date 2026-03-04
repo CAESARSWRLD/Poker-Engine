@@ -12,5 +12,5 @@ public:
 	Deck();
 	void printDeck();
 	Card getNextCard();
-
+	void setAllToUnused();
 };

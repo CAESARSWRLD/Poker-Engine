@@ -37,6 +37,17 @@ public:
 	//values for the table's attributes. Integer as lone parameter is the number of players
 	Table(int playerCount);
 	
+	void assignNewCards()
+	{
+		//prior to assigning cards, all cards should be set to unused
+		deck.setAllToUnused();
+		for (auto& p : players)
+		{
+			p.setCards(deck.getNextCard(), deck.getNextCard());
+		}
+	}
+
+	
 
 	void resetPlayerBetSizes()
 	{
