@@ -12,14 +12,14 @@ private:
 public:
 	Card(int newVal, int newSuit, bool newUsed) : value(newVal), suit(newSuit), used(newUsed){}
 	//suit 'f' for default
-	Card() : value(0), suit('f'), used(false){}
+	Card() : value(-1), suit(-1), used(false){}
 
 	int getValue()const
 	{
 		return value;
 	}
 
-	char getSuit()const
+	int getSuit()const
 	{
 		return suit;
 	}

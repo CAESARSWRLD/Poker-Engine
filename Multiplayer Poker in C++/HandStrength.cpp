@@ -19,6 +19,94 @@ int determineHandStrength(Player& player, Table& table)
 
 
 
+bool findBestHand(Player& player, std::vector<Card> board)
+{
+	
+
+
+	std::vector<int> hardCodedStraight = {
+		4,5,6,7,8,9,10
+	};
+
+
+	//must include the play's cards and the board cards
+	Card cardOne = player.getCardOne();
+	Card cardTwo = player.getCardTwo();
+
+	std::vector<Card> cards = board;
+	cards.push_back(cardOne);
+	cards.push_back(cardTwo);
+
+	
+
+	cout << findStraight(cards) << " high straight found" << endl;
+
+	cout << findFlush(cards) << " high flush found" << endl;
+
+
+
+
+	// should return an integer to represent hand strength, 
+	// then players hand can be compared using the int returned by this function
+	return 0;
+}
+
+
+
+// if players have the same high card of their flush, that will be handled outside of this function.
+// this returns the highest card value of the flush
+int findFlush(std::vector<Card> cards)
+{ 
+
+	
+	std::vector<Card> flushCards;
+
+	for (int i = 0; i < 7; i++)
+	{
+		Card newCard = Card(i, 1, true);
+		flushCards.push_back(newCard);
+		cout << "card: " << newCard.getName() << endl;
+
+		cout << "it has the suit " << newCard.getSuit() << endl;
+	}
+
+	int suitCounts[4] = {};
+	for (int i = 0; i < flushCards.size(); i++)
+	{
+		suitCounts[flushCards[i].getSuit()]++;
+
+		cout << flushCards[i].getSuit() << " is the suit" << endl;
+	}
+
+	int suitOfFlush = -1;
+	for (size_t i = 0; i < flushCards.size(); i++)
+	{
+		if (suitCounts[i] >= 5)
+		{
+			cout << "FLUSH FOUND" << endl;
+			suitOfFlush = i;
+			cout << "suit of flush is " << suitOfFlush << endl;
+			
+			break;
+		}
+		return -1;
+	}
+
+	int highestValue = -1;
+	//find highest value card of flush
+	for (auto& card : flushCards)
+	{
+		if (card.getSuit() == suitOfFlush && card.getValue() > highestValue)
+		{
+			highestValue = card.getValue();
+		}
+	}
+
+	return highestValue;
+}
+
+
+
 // integer returned represents the highest card of the straight if there is a straight. If there isn't
 // one, it'll return -1
 int findStraight(std::vector<Card> cards)
@@ -36,7 +124,7 @@ int findStraight(std::vector<Card> cards)
 
 	std::sort(values.begin(), values.end());
 
-	
+
 
 	values = hardCodedStraight;
 	for (auto& val : values)
@@ -72,36 +160,11 @@ int findStraight(std::vector<Card> cards)
 		}
 	}
 
-	
+
 	return -1;
 }
 
-bool findBestHand(Player& player, std::vector<Card> board)
-{
-	
 
-
-	std::vector<int> hardCodedStraight = {
-		4,5,6,7,8,9,10
-	};
-
-
-	//must include the play's cards and the board cards
-	Card cardOne = player.getCardOne();
-	Card cardTwo = player.getCardTwo();
-
-	std::vector<Card> cards = board;
-	cards.push_back(cardOne);
-	cards.push_back(cardTwo);
-
-	
-
-	cout << findStraight(cards) << " high straight found" << endl;
-
-	// should return an integer to represent hand strength, 
-	// then players hand can be compared using the int returned by this function
-	return 0;
-}
 
 int getBestPairValue()
 {
