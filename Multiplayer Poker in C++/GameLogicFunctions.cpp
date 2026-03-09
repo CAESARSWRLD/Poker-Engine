@@ -44,14 +44,19 @@ Player& simpleRound(Table& table, double& pot)
 	
 	for (int i = 0; i < 5; i++)
 	{
-
 		Card card1 = deck.getNextCard();
 		fakeBoard.push_back(card1);
 	}
 
 	
-	
+	//cout << "Small blind's cards:\n" << table.getPlayers()[0].getCardOne().getName() << endl << table.getPlayers()[0].getCardTwo().getName() << "\n\n";
 
+	//cout << "fake board: " << endl;
+
+	/*for (auto& card : fakeBoard)
+	{
+		cout << card.getName() << endl;
+	}*/
 
 	findBestHand(table.getPlayers()[0], fakeBoard);
 

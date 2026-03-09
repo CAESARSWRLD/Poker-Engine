@@ -7,4 +7,4 @@
 int determineHandStrength(Player& player, Table& table);
 bool findBestHand(Player& player, std::vector<Card> board);
 int getBestPairValue();
-void sortCardsInPlace(std::vector<Card>& cards);
+int findStraight(std::vector<Card> cards);
