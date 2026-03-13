@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <utility>//for std:pair
 
 using std::cout;
 using std::endl;
@@ -41,13 +42,113 @@ bool findBestHand(Player& player, std::vector<Card> board)
 
 	cout << findStraight(cards) << " high straight found" << endl;
 
-	cout << findFlush(cards) << " high flush found" << endl;
+
+	std::vector<Card> flushCards;
+	
+		Card newCard1 = Card(2, 1, true);
+		Card newCard2 = Card(2, 1, true);
+		Card newCard3 = Card(3, 1, true);
+		Card newCard4 = Card(3, 1, true);
+		Card newCard5 = Card(3, 1, true);
+		Card newCard6 = Card(8, 1, true);
+		Card newCard7 = Card(9, 1, true);
+
+		flushCards.push_back(newCard1);
+		flushCards.push_back(newCard2);
+		flushCards.push_back(newCard3);
+		flushCards.push_back(newCard4);
+		flushCards.push_back(newCard5);
+		flushCards.push_back(newCard6);
+		flushCards.push_back(newCard7);
+
+	
 
 
+	cout << findFlush(flushCards) << " high flush found" << endl;
 
+
+	int duplicateCount = 0;
+
+	//returns the value of duplicates, if there are duplcaites. Also updates duplicate count to determine pair, trips or quads
+	cout << findDuplicateCards(flushCards, duplicateCount) << " value pair found, with " << duplicateCount << " duplicates" << endl;
+	cout << duplicateCount << endl;
 
 	// should return an integer to represent hand strength, 
 	// then players hand can be compared using the int returned by this function
+	return 0;
+}
+
+
+// returns the value of the duplicated card and updates the duplicateCount to be 2, 3, or 4 for the corresponding pair, trips or quads.
+// duplicate count should be left as 0 when there are no duplicates and the function should return -1 in that case.
+int findDuplicateCards(std::vector<Card> cards, int& duplicateCount)
+{
+
+	std::vector<std::pair<int, int>> cardsWithCount = {};
+
+	
+	for (size_t i = 0; i < cards.size(); i++)
+	{
+		int value = cards[i].getValue();
+		bool alreadyCounted = false;
+
+		for (auto& p : cardsWithCount)
+		{
+			if (p.first == value)
+			{
+				alreadyCounted = true;
+				break;
+			}
+		}
+
+		if (alreadyCounted)
+			continue;
+
+		int count = 0;
+		for (size_t j = 0; j < cards.size(); j++)
+		{
+			if (cards[j].getValue() == value)
+				count++;
+		}
+
+		std::pair<int, int> valueWithCount = std::pair(value, count);
+		cardsWithCount.push_back(valueWithCount);
+	}
+
+	
+
+
+	//finds most duplicated value
+	int most = 0;
+	for (auto& value : cardsWithCount)
+	{
+		if (value.second > most)
+		{
+			most = value.second;
+		}
+	}
+
+	duplicateCount = most;
+
+	int valueOfMostDuped = -1;
+
+	for (auto& value : cardsWithCount)
+	{
+		if (most == value.second)
+		{
+			valueOfMostDuped = value.first;
+			break;
+		}
+	}
+
+	return valueOfMostDuped;
+
+}
+
+
+int findFullHouse(std::vector<Card> cards)
+{
+
 	return 0;
 }
 
@@ -56,45 +157,37 @@ bool findBestHand(Player& player, std::vector<Card> board)
 // if players have the same high card of their flush, that will be handled outside of this function.
 // this returns the highest card value of the flush
 int findFlush(std::vector<Card> cards)
-{ 
+{
 
 	
-	std::vector<Card> flushCards;
 
-	for (int i = 0; i < 7; i++)
+	int suitCounts[4] = { 0 };
+
+	// count suits from the real cards
+	for (int i = 0; i < cards.size(); i++)
 	{
-		Card newCard = Card(i, 1, true);
-		flushCards.push_back(newCard);
-		cout << "card: " << newCard.getName() << endl;
-
-		cout << "it has the suit " << newCard.getSuit() << endl;
-	}
-
-	int suitCounts[4] = {};
-	for (int i = 0; i < flushCards.size(); i++)
-	{
-		suitCounts[flushCards[i].getSuit()]++;
-
-		cout << flushCards[i].getSuit() << " is the suit" << endl;
+		suitCounts[cards[i].getSuit()]++;
 	}
 
 	int suitOfFlush = -1;
-	for (size_t i = 0; i < flushCards.size(); i++)
+
+	for (int i = 0; i < 4; i++)
 	{
 		if (suitCounts[i] >= 5)
 		{
-			cout << "FLUSH FOUND" << endl;
 			suitOfFlush = i;
-			cout << "suit of flush is " << suitOfFlush << endl;
-			
 			break;
 		}
-		return -1;
 	}
 
+	// no flush
+	if (suitOfFlush == -1)
+		return -1;
+
 	int highestValue = -1;
-	//find highest value card of flush
-	for (auto& card : flushCards)
+
+	// find highest card of that suit (from test flush)
+	for (auto& card : cards)
 	{
 		if (card.getSuit() == suitOfFlush && card.getValue() > highestValue)
 		{
@@ -104,7 +197,6 @@ int findFlush(std::vector<Card> cards)
 
 	return highestValue;
 }
-
 
 
 // integer returned represents the highest card of the straight if there is a straight. If there isn't
