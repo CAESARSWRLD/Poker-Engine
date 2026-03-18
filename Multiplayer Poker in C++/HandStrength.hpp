@@ -10,6 +10,7 @@ int getBestPairValue();
 int findStraight(std::vector<Card> cards);
 int findFlush(std::vector<Card> cards);
 int findDuplicateCards(std::vector<Card> cards, int& value);
-int findFullHouse(std::vector<Card> cards);
+int isFullHouse(std::vector<Card> cards);
+
 
 
