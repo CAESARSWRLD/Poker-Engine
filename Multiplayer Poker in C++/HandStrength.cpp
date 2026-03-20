@@ -10,6 +10,15 @@
 using std::cout;
 using std::endl;
 
+//determine hand strength will be used only when players make it to showdown
+
+//check for straight or flush, then
+//check for a pair, if theres a pair then check for two pair
+//if theres two pair then check for trips
+//if there's trips then check for a full house
+//then check for quads
+
+
 int determineHandStrength(Player& player, Table& table)
 {
 	int strength = 0;
@@ -63,19 +72,16 @@ bool findBestHand(Player& player, std::vector<Card> board)
 
 	std::vector<Card> fullHouse;
 
-	newCard1 = Card(2, 1, true);
-	newCard2 = Card(2, 1, true);
-	newCard3 = Card(2, 1, true);
-	newCard4 = Card(3, 1, true);
+	newCard1 = Card(7, 1, true);
+	newCard2 = Card(7, 1, true);
+	newCard3 = Card(7, 1, true);
+	newCard4 = Card(7, 1, true);
 	newCard5 = Card(3, 1, true);
 	newCard6 = Card(3, 1, true);
 	newCard7 = Card(9, 1, true);
 
 
 	cout << findFlush(flushCards) << " high flush found" << endl;
-
-
-
 
 
 	fullHouse.push_back(newCard1);
@@ -218,9 +224,7 @@ int findDuplicateCards(std::vector<Card> cards, int& duplicateCount)
 	}
 
 	return valueOfMostDuped;
-
 }
-
 
 
 // if players have the same high card of their flush, that will be handled outside of this function.
@@ -248,7 +252,7 @@ int findFlush(std::vector<Card> cards)
 			break;
 		}
 	}
-
+	
 	// no flush
 	if (suitOfFlush == -1)
 		return -1;
