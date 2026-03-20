@@ -10,6 +10,15 @@
 using std::cout;
 using std::endl;
 
+//determine hand strength will be used only when players make it to showdown
+
+//check for straight or flush, then
+//check for a pair, if theres a pair then check for two pair
+//if theres two pair then check for trips
+//if there's trips then check for a full house
+//then check for quads
+
+
 int determineHandStrength(Player& player, Table& table)
 {
 	int strength = 0;
@@ -45,33 +54,62 @@ bool findBestHand(Player& player, std::vector<Card> board)
 
 	std::vector<Card> flushCards;
 	
-		Card newCard1 = Card(2, 1, true);
-		Card newCard2 = Card(2, 1, true);
-		Card newCard3 = Card(3, 1, true);
-		Card newCard4 = Card(3, 1, true);
-		Card newCard5 = Card(3, 1, true);
-		Card newCard6 = Card(8, 1, true);
-		Card newCard7 = Card(9, 1, true);
+	Card newCard1 = Card(2, 1, true);
+	Card newCard2 = Card(2, 1, true);
+	Card newCard3 = Card(3, 1, true);
+	Card newCard4 = Card(3, 1, true);
+	Card newCard5 = Card(3, 1, true);
+	Card newCard6 = Card(8, 1, true);
+	Card newCard7 = Card(9, 1, true);
 
-		flushCards.push_back(newCard1);
-		flushCards.push_back(newCard2);
-		flushCards.push_back(newCard3);
-		flushCards.push_back(newCard4);
-		flushCards.push_back(newCard5);
-		flushCards.push_back(newCard6);
-		flushCards.push_back(newCard7);
+	flushCards.push_back(newCard1);
+	flushCards.push_back(newCard2);
+	flushCards.push_back(newCard3);
+	flushCards.push_back(newCard4);
+	flushCards.push_back(newCard5);
+	flushCards.push_back(newCard6);
+	flushCards.push_back(newCard7);
 
-	
+	std::vector<Card> fullHouse;
+
+	newCard1 = Card(7, 1, true);
+	newCard2 = Card(7, 1, true);
+	newCard3 = Card(7, 1, true);
+	newCard4 = Card(7, 1, true);
+	newCard5 = Card(3, 1, true);
+	newCard6 = Card(3, 1, true);
+	newCard7 = Card(9, 1, true);
 
 
 	cout << findFlush(flushCards) << " high flush found" << endl;
 
 
-	int duplicateCount = 0;
+	fullHouse.push_back(newCard1);
+	fullHouse.push_back(newCard2);
+	fullHouse.push_back(newCard3);
+	fullHouse.push_back(newCard4);
+	fullHouse.push_back(newCard5);
+	fullHouse.push_back(newCard6);
+	fullHouse.push_back(newCard7);
 
+
+	int duplicateCount = 0;
 	//returns the value of duplicates, if there are duplcaites. Also updates duplicate count to determine pair, trips or quads
 	cout << findDuplicateCards(flushCards, duplicateCount) << " value pair found, with " << duplicateCount << " duplicates" << endl;
-	cout << duplicateCount << endl;
+
+	findDuplicateCards(fullHouse, duplicateCount);
+
+	if (duplicateCount == 3)
+	{
+		cout << "Trip " << findDuplicateCards(fullHouse, duplicateCount) << "'s found" << endl;
+	}
+
+	if (duplicateCount == 4)
+	{
+		cout << "Quad " << findDuplicateCards(fullHouse, duplicateCount) << "'s found" << endl;
+	}
+
+	cout << isFullHouse(fullHouse) << " high fullhouse found" << endl;
 
 	// should return an integer to represent hand strength, 
 	// then players hand can be compared using the int returned by this function
@@ -79,12 +117,57 @@ bool findBestHand(Player& player, std::vector<Card> board)
 }
 
 
+int isFullHouse(std::vector<Card> cards)
+{
+	int duplicateCount = 0;
 
-int findQuads(std::vector<Card> cards)
+	// find most duplicated value
+	int tripleValue = findDuplicateCards(cards, duplicateCount);
+
+	// must be exactly 3
+	if (duplicateCount != 3)
+		return -1;
+
+	// remove the triple cards
+	std::vector<Card> remainingCards;
+	for (const auto& card : cards)
+	{
+		if (card.getValue() != tripleValue)
+		{
+			remainingCards.push_back(card);
+		}
+	}
+
+
+
+	// check if remaining cards contain a pair
+	int pairCount = 0;
+	int secondValue = findDuplicateCards(remainingCards, pairCount);
+
+	if (pairCount >= 2)
+	{
+		if (tripleValue > secondValue)
+		{
+			return tripleValue;
+		}
+
+
+
+
+		return secondValue;
+	}
+
+	return -1;
+}
+
+
+// returns the value of the duplicated card and updates the duplicateCount to be 2, 3, or 4 for the corresponding pair, trips or quads.
+// duplicate count should be left as 0 when there are no duplicates and the function should return -1 in that case.
+int findDuplicateCards(std::vector<Card> cards, int& duplicateCount)
 {
 
 	std::vector<std::pair<int, int>> cardsWithCount = {};
-
+		
 	
 	for (size_t i = 0; i < cards.size(); i++)
 	{
@@ -140,16 +223,7 @@ int findQuads(std::vector<Card> cards)
 	}
 
 	return valueOfMostDuped;
-
 }
-
-
-int findFullHouse(std::vector<Card> cards)
-{
-
-	return 0;
-}
-
 
 
 // if players have the same high card of their flush, that will be handled outside of this function.
@@ -177,7 +251,7 @@ int findFlush(std::vector<Card> cards)
 			break;
 		}
 	}
-
+	
 	// no flush
 	if (suitOfFlush == -1)
 		return -1;

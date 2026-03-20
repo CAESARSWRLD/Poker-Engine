@@ -9,7 +9,8 @@ bool findBestHand(Player& player, std::vector<Card> board);
 int getBestPairValue();
 int findStraight(std::vector<Card> cards);
 int findFlush(std::vector<Card> cards);
-int findQuads(std::vector<Card> cards);
-int findFullHouse(std::vector<Card> cards);
+int findDuplicateCards(std::vector<Card> cards, int& value);
+int isFullHouse(std::vector<Card> cards);
+
 
 

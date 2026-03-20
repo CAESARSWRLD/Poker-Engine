@@ -10,6 +10,11 @@
 using std::cout;
 using std::endl;
 
+
+//some of these should be refactored
+
+
+
 void gameLoop()
 {
 	
@@ -58,6 +63,8 @@ Player& simpleRound(Table& table, double& pot)
 		cout << card.getName() << endl;
 	}*/
 
+
+	//for testing
 	findBestHand(table.getPlayers()[0], fakeBoard);
 
 
@@ -93,7 +100,13 @@ Player& simpleRound(Table& table, double& pot)
 		round++;
 	}
 
+	//showdown:
+	/////
 
+
+
+
+	/////
 
 	return table.getPlayers()[winnerIndex];
 }
