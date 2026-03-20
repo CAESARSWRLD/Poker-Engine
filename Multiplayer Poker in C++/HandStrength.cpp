@@ -22,7 +22,10 @@ using std::endl;
 int determineHandStrength(Player& player, Table& table)
 {
 	int strength = 0;
-	std::vector<Card> cards;
+	
+
+	
+
 
 	return strength;
 }
