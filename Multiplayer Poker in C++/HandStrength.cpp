@@ -79,9 +79,8 @@ bool findBestHand(Player& player, std::vector<Card> board)
 }
 
 
-// returns the value of the duplicated card and updates the duplicateCount to be 2, 3, or 4 for the corresponding pair, trips or quads.
-// duplicate count should be left as 0 when there are no duplicates and the function should return -1 in that case.
-int findDuplicateCards(std::vector<Card> cards, int& duplicateCount)
+
+int findQuads(std::vector<Card> cards)
 {
 
 	std::vector<std::pair<int, int>> cardsWithCount = {};
@@ -128,7 +127,6 @@ int findDuplicateCards(std::vector<Card> cards, int& duplicateCount)
 		}
 	}
 
-	duplicateCount = most;
 
 	int valueOfMostDuped = -1;
 
