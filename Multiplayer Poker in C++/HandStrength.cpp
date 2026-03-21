@@ -10,36 +10,20 @@
 using std::cout;
 using std::endl;
 
-//determine hand strength will be used only when players make it to showdown
-
-//check for straight or flush, then
-//check for a pair, if theres a pair then check for two pair
-//if theres two pair then check for trips
-//if there's trips then check for a full house
-//then check for quads
-
-
-int determineHandStrength(Player& player, Table& table)
-{
-	int strength = 0;
-	
-
-	
-
-
-	return strength;
-}
 
 
 
-bool findBestHand(Player& player, std::vector<Card> board)
+
+
+// check for all possible hands
+
+// rule out hands that are impossible based on previous checks
+int findBestHand(Player& player, std::vector<Card> board)
 {
 	
 
 
-	std::vector<int> hardCodedStraight = {
-		4,5,6,7,8,9,10
-	};
+	
 
 
 	//must include the play's cards and the board cards
@@ -78,8 +62,8 @@ bool findBestHand(Player& player, std::vector<Card> board)
 	newCard1 = Card(7, 1, true);
 	newCard2 = Card(7, 1, true);
 	newCard3 = Card(7, 1, true);
-	newCard4 = Card(7, 1, true);
-	newCard5 = Card(3, 1, true);
+	newCard4 = Card(6, 1, true);
+	newCard5 = Card(6, 1, true);
 	newCard6 = Card(3, 1, true);
 	newCard7 = Card(9, 1, true);
 
@@ -116,7 +100,7 @@ bool findBestHand(Player& player, std::vector<Card> board)
 
 	// should return an integer to represent hand strength, 
 	// then players hand can be compared using the int returned by this function
-	return 0;
+	return -1;
 }
 
 

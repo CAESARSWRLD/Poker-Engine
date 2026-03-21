@@ -40,33 +40,43 @@ void gameLoop()
 
 
 
+
+
+//for testing
+Card newCard1 = Card(2, 1, true);
+Card newCard2 = Card(2, 1, true);
+Card newCard3 = Card(2, 1, true);
+Card newCard4 = Card(3, 1, true);
+Card newCard5 = Card(3, 1, true);
+Card newCard6 = Card(8, 1, true);
+Card newCard7 = Card(9, 1, true);
+
+std::vector<Card> hardCodedHand = {
+		newCard1,
+		newCard2,
+		newCard3,
+		newCard4,
+		newCard5
+		
+};
+
+
+
+
+
+
 Player& simpleRound(Table& table, double& pot)
 {
 	Deck deck = Deck();
-	//deck.printDeck();
-
-	std::vector<Card> fakeBoard = {};
 	
-	for (int i = 0; i < 5; i++)
-	{
-		Card card1 = deck.getNextCard();
-		fakeBoard.push_back(card1);
-	}
 
-	
-	//cout << "Small blind's cards:\n" << table.getPlayers()[0].getCardOne().getName() << endl << table.getPlayers()[0].getCardTwo().getName() << "\n\n";
-
-	//cout << "fake board: " << endl;
-
-	/*for (auto& card : fakeBoard)
-	{
-		cout << card.getName() << endl;
-	}*/
 
 
 	//for testing
-	findBestHand(table.getPlayers()[0], fakeBoard);
-
+	Player p = Player("fakePlayer", 10);
+	p.setCards(newCard6, newCard7);
+	findBestHand(p, hardCodedHand);
+	 
 
 
 	bool winnerFound = false;
