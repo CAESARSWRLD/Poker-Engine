@@ -504,7 +504,7 @@ void runHand(Table& table)
 
 	//simpleRound will return the winning player
 	Player& winner = simpleRound(table, pot);
-			
+		
 		
 		
 
