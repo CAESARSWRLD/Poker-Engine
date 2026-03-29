@@ -134,6 +134,7 @@
     <ClCompile Include="GameLogicFunctions.cpp" />
     <ClCompile Include="HandStrength.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="NetworkSockets.cpp" />
     <ClCompile Include="Table.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -143,6 +144,7 @@
     <ClInclude Include="GameLogicFunctions.hpp" />
     <ClInclude Include="GameWrapper.hpp" />
     <ClInclude Include="HandStrength.hpp" />
+    <ClInclude Include="NetworkSockets.h" />
     <ClInclude Include="Networking.hpp" />
     <ClInclude Include="Player.hpp" />
     <ClInclude Include="RoundData.hpp" />

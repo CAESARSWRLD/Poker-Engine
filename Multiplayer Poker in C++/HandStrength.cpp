@@ -20,11 +20,6 @@ using std::endl;
 // rule out hands that are impossible based on previous checks
 int findBestHand(Player& player, std::vector<Card> board)
 {
-	
-
-
-	
-
 
 	//must include the play's cards and the board cards
 	Card cardOne = player.getCardOne();
@@ -39,64 +34,30 @@ int findBestHand(Player& player, std::vector<Card> board)
 	cout << findStraight(cards) << " high straight found" << endl;
 
 
-	std::vector<Card> flushCards;
+
+	cout << findFlush(cards) << " high flush found" << endl;
+
+
 	
-	Card newCard1 = Card(2, 1, true);
-	Card newCard2 = Card(2, 1, true);
-	Card newCard3 = Card(3, 1, true);
-	Card newCard4 = Card(3, 1, true);
-	Card newCard5 = Card(3, 1, true);
-	Card newCard6 = Card(8, 1, true);
-	Card newCard7 = Card(9, 1, true);
-
-	flushCards.push_back(newCard1);
-	flushCards.push_back(newCard2);
-	flushCards.push_back(newCard3);
-	flushCards.push_back(newCard4);
-	flushCards.push_back(newCard5);
-	flushCards.push_back(newCard6);
-	flushCards.push_back(newCard7);
-
-	std::vector<Card> fullHouse;
-
-	newCard1 = Card(7, 1, true);
-	newCard2 = Card(7, 1, true);
-	newCard3 = Card(7, 1, true);
-	newCard4 = Card(6, 1, true);
-	newCard5 = Card(6, 1, true);
-	newCard6 = Card(3, 1, true);
-	newCard7 = Card(9, 1, true);
-
-
-	cout << findFlush(flushCards) << " high flush found" << endl;
-
-
-	fullHouse.push_back(newCard1);
-	fullHouse.push_back(newCard2);
-	fullHouse.push_back(newCard3);
-	fullHouse.push_back(newCard4);
-	fullHouse.push_back(newCard5);
-	fullHouse.push_back(newCard6);
-	fullHouse.push_back(newCard7);
 
 
 	int duplicateCount = 0;
 	//returns the value of duplicates, if there are duplcaites. Also updates duplicate count to determine pair, trips or quads
-	cout << findDuplicateCards(flushCards, duplicateCount) << " value pair found, with " << duplicateCount << " duplicates" << endl;
+	cout << findDuplicateCards(cards, duplicateCount) << " value pair found, with " << duplicateCount << " duplicates" << endl;
 
-	findDuplicateCards(fullHouse, duplicateCount);
+	findDuplicateCards(cards, duplicateCount);
 
 	if (duplicateCount == 3)
 	{
-		cout << "Trip " << findDuplicateCards(fullHouse, duplicateCount) << "'s found" << endl;
+		cout << "Trip " << findDuplicateCards(cards, duplicateCount) << "'s found" << endl;
 	}
 
 	if (duplicateCount == 4)
 	{
-		cout << "Quad " << findDuplicateCards(fullHouse, duplicateCount) << "'s found" << endl;
+		cout << "Quad " << findDuplicateCards(cards, duplicateCount) << "'s found" << endl;
 	}
 
-	cout << isFullHouse(fullHouse) << " high fullhouse found" << endl;
+	cout << isFullHouse(cards) << " high fullhouse found" << endl;
 
 	// should return an integer to represent hand strength, 
 	// then players hand can be compared using the int returned by this function

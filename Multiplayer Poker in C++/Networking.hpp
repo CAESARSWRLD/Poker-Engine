@@ -38,11 +38,6 @@ std::string facingBetProcessAnswer(double& betSize, double currentPlayersBet, do
 	}
 
 
-	
-
-
-	
-	
 	while (raised < 2 * betSize)
 	{
 
